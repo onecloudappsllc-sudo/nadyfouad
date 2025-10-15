@@ -3,8 +3,6 @@ workflows:
     name: iOS Release Build
     instance_type: mac_mini_m2
     max_build_duration: 60
-    integrations:
-      app_store_connect: codemagic
     environment:
       ios_signing:
         distribution_type: app_store
@@ -12,34 +10,37 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      vars:
+        COCOAPODS_DISABLE_STATS: true
     scripts:
-      - name: Set up code signing
+      - name: Set up keychain
         script: |
-          set -e
-          set -x
           keychain initialize
       
-      - name: Get Flutter packages  
+      - name: Get Flutter packages
         script: |
-          flutter packages pub get
+          flutter pub get
+      
+      - name: Generate iOS Flutter files
+        script: |
+          flutter precache --ios
+          flutter build ios-framework --no-profile --no-debug --output=ios/Flutter
       
       - name: Install CocoaPods dependencies
         script: |
-          find . -name "Podfile" -execdir pod install \;
+          cd ios
+          pod install --repo-update
+          cd ..
       
-      - name: Flutter build
+      - name: Build IPA
         script: |
-          flutter build ipa --release \
-            --export-options-plist=$HOME/export_options.plist
+          flutter build ipa --release --export-options-plist=$HOME/export_options.plist
     
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - flutter_drive.log
     
     publishing:
       email:
         recipients:
           - your-email@example.com
-      app_store_connect:
-        auth: integration
