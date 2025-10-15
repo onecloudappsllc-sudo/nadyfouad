@@ -10,8 +10,6 @@ workflows:
       flutter: stable
       xcode: 15.0
       cocoapods: 1.16.2
-      vars:
-        FLUTTER_ROOT: $HOME/programs/flutter
     scripts:
       - name: Set up keychain
         script: |
@@ -20,53 +18,36 @@ workflows:
       - name: Install CocoaPods
         script: |
           sudo gem install cocoapods -v 1.16.2
-          pod --version
       
       - name: Get Flutter packages
         script: |
           flutter pub get
       
-      - name: Clean everything
+      - name: Clean iOS build
         script: |
           flutter clean
           cd ios
-          rm -rf Pods
-          rm -rf Podfile.lock
-          rm -rf .symlinks
-          rm -rf Flutter/Flutter.framework
-          rm -rf Flutter/Flutter.podspec
-          rm -rf Flutter/Generated.xcconfig
-          rm -rf Flutter/ephemeral
-          rm -rf Flutter/engine
-          rm -rf ~/Library/Developer/Xcode/DerivedData/*
-          rm -rf ~/Library/Caches/CocoaPods
+          rm -rf Pods Podfile.lock
           cd ..
       
-      - name: Flutter precache
+      - name: Flutter precache and build
         script: |
           flutter precache --ios
+          flutter build ios --release --no-codesign
       
-      - name: Pod repo update
-        script: |
-          pod repo update
-      
-      - name: Install pods with verbose logging
+      - name: Install pods
         script: |
           cd ios
-          pod deintegrate || true
-          pod cache clean --all
-          pod setup
-          pod install --repo-update --verbose
+          pod install --repo-update
           cd ..
       
-      - name: Build iOS IPA
+      - name: Build IPA
         script: |
-          flutter build ipa --release --verbose
+          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
     
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - flutter_drive.log
     
     publishing:
       email:
