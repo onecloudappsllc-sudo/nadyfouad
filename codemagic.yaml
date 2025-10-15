@@ -19,10 +19,15 @@ workflows:
         script: |
           flutter pub get
       
-      - name: Pod install
+      - name: Pre-build to generate Flutter files
+        script: |
+          flutter build ios --release --no-codesign
+      
+      - name: Clean and reinstall pods
         script: |
           cd ios
-          pod install
+          rm -rf Pods Podfile.lock
+          pod install --repo-update
           cd ..
       
       - name: Build IPA
