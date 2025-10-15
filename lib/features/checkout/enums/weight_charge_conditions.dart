@@ -1,0 +1,1 @@
+enum WeightChargeConditions {greater_or_equal, less_or_equal, greater, less}

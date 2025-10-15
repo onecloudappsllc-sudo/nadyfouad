@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    Fore more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  -->
+  <base href="/">
+  <meta name="google-signin-client_id" content="831303168406-i745bmrif3bacjndf7dhl5m6r19sltr6.apps.googleusercontent.com">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="NADI FOUAD.">
+  <!-- DEMO ONLY -->
+
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="flutter_grocery">
+
+  <link rel="apple-touch-icon" href="icons/app_logo.png">
+
+  <!-- Favicon -->
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+
+  <title>NADI FOUAD</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <style>.grecaptcha-badge { visibility: hidden;} </style>
+</head>
+<body>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfB1sYNbS-EzXvMaTjUIEwRmbcij-ghB4&callback=Function.prototype"></script>
+
+<script type="application/javascript" src="/assets/packages/flutter_inappwebview_web/assets/web/web_support.js" defer></script>
+
+
+
+<script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/firebase-messaging-sw.js");
+      });
+      window.addEventListener('flutter-first-frame', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js?v=1998547880');
+      });
+    }
+  </script>
+
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
+<div class="preloader">
+  <div class="preloader-container">
+    <img width="55" class="preloader-img" src="assets/preloader.svg" alt="">
+    <div class="loader"></div>
+  </div>
+</div>
+<!-- Header -->
+<header class="header">
+  <div class="header-top-line"></div>
+  <div class="header-container d-flex align-items-center justify-content-between">
+    <div class="header-start d-flex gap-4 align-items-center">
+      <img class="logo" src="assets/logo.svg" alt="">
+      <div class="placeholder"></div>
+      <div class="placeholder"></div>
+      <div class="placeholder"></div>
+    </div>
+    <div class="header-end d-flex align-items-center gap-4">
+      <div class="placeholder placeholder-wide"></div>
+      <div class="placeholder"></div>
+      <div class="placeholder"></div>
+      <img class="svg" src="assets/cart_icon.svg" alt="">
+      <img class="svg" src="assets/menu_icon.svg" alt="">
+    </div>
+  </div>
+</header>
+
+<script>
+  // Check if localStorage is supported in the browser
+  if (typeof Storage !== "undefined") {
+    var itemValue = localStorage.getItem("flutter.theme");
+    document.body.classList.toggle("theme-dark", itemValue === "true");
+  }
+
+</script>
+
+
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyCQZZZ2bK32SbbA0fiwUlv8T02UewSqcSQ",
+        authDomain: "nadifuad-2da0f.firebaseapp.com",
+        projectId: "nadifuad-2da0f",
+        storageBucket: "nadifuad-2da0f.firebasestorage.app",
+        messagingSenderId: "1010750881009",
+        appId: "1:1010750881009:android:ac783822454e6dc0d3bd50"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+<script src="main.dart.js?version=7.5" type="application/javascript"></script>
+</body>
+</html>
