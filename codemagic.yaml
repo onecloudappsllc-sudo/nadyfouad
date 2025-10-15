@@ -3,53 +3,43 @@ workflows:
     name: iOS Release Build
     instance_type: mac_mini_m2
     max_build_duration: 60
+    integrations:
+      app_store_connect: codemagic
     environment:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.nadi.fouad
       flutter: stable
-      xcode: 15.0
-      cocoapods: 1.16.2
+      xcode: latest
+      cocoapods: default
     scripts:
-      - name: Set up keychain
+      - name: Set up code signing
         script: |
+          set -e
+          set -x
           keychain initialize
       
-      - name: Install CocoaPods
+      - name: Get Flutter packages  
         script: |
-          sudo gem install cocoapods -v 1.16.2
+          flutter packages pub get
       
-      - name: Get Flutter packages
+      - name: Install CocoaPods dependencies
         script: |
-          flutter pub get
+          find . -name "Podfile" -execdir pod install \;
       
-      - name: Clean iOS build
+      - name: Flutter build
         script: |
-          flutter clean
-          cd ios
-          rm -rf Pods Podfile.lock
-          cd ..
-      
-      - name: Flutter precache and build
-        script: |
-          flutter precache --ios
-          flutter build ios --release --no-codesign
-      
-      - name: Install pods
-        script: |
-          cd ios
-          pod install --repo-update
-          cd ..
-      
-      - name: Build IPA
-        script: |
-          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+          flutter build ipa --release \
+            --export-options-plist=$HOME/export_options.plist
     
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
     
     publishing:
       email:
         recipients:
           - your-email@example.com
+      app_store_connect:
+        auth: integration
