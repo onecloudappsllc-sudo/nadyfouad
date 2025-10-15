@@ -10,8 +10,6 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
-      vars:
-        COCOAPODS_DISABLE_STATS: true
     scripts:
       - name: Set up keychain
         script: |
@@ -21,15 +19,10 @@ workflows:
         script: |
           flutter pub get
       
-      - name: Generate iOS Flutter files
-        script: |
-          flutter precache --ios
-          flutter build ios-framework --no-profile --no-debug --output=ios/Flutter
-      
-      - name: Install CocoaPods dependencies
+      - name: Pod install
         script: |
           cd ios
-          pod install --repo-update
+          pod install
           cd ..
       
       - name: Build IPA
