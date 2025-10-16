@@ -7,36 +7,58 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.nadi.fouad
-      vars:
-        XCODE_WORKSPACE: "Runner.xcworkspace"
-        XCODE_SCHEME: "Runner"
       flutter: stable
       xcode: latest
       cocoapods: default
     scripts:
       - name: Set up code signing
         script: |
-          set -e
-          set -x
           keychain initialize
       
-      - name: Install dependencies
+      - name: Get dependencies
         script: |
-          flutter packages pub get
+          flutter pub get
+      
+      - name: Generate Flutter config files
+        script: |
+          cd ios
+          flutter precache --ios
+          cd ..
+          cat > ios/Flutter/Generated.xcconfig << EOF
+FLUTTER_ROOT=$HOME/programs/flutter
+FLUTTER_APPLICATION_PATH=$PWD
+COCOAPODS_PARALLEL_CODE_SIGN=true
+FLUTTER_TARGET=lib/main.dart
+FLUTTER_BUILD_DIR=build
+FLUTTER_BUILD_NAME=1.0.0
+FLUTTER_BUILD_NUMBER=1
+EXCLUDED_ARCHS[sdk=iphonesimulator*]=i386
+EXCLUDED_ARCHS[sdk=iphoneos*]=armv7
+DART_OBFUSCATION=false
+TRACK_WIDGET_CREATION=true
+TREE_SHAKE_ICONS=false
+PACKAGE_CONFIG=.dart_tool/package_config.json
+EOF
+          cat > ios/Flutter/Debug.xcconfig << EOF
+#include "Generated.xcconfig"
+EOF
+          cat > ios/Flutter/Release.xcconfig << EOF
+#include "Generated.xcconfig"
+EOF
       
       - name: Install pods
         script: |
-          find . -name "Podfile" -execdir pod install \;
+          cd ios
+          pod install
+          cd ..
       
       - name: Build ipa
         script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
+          flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
     
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - flutter_drive.log
     
     publishing:
       email:
