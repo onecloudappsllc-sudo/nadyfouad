@@ -19,7 +19,7 @@ ThemeData dark = ThemeData(
     TargetPlatform.fuchsia: ZoomPageTransitionsBuilder(),
   }),
   popupMenuTheme: const PopupMenuThemeData(color: Color(0xFF29292D), surfaceTintColor: Color(0xFF29292D)),
-  dialogTheme: const DialogTheme(surfaceTintColor: Colors.white10),
+  dialogTheme: const DialogThemeData(surfaceTintColor: Colors.white10),
   colorScheme: ColorScheme(
     brightness: Brightness.dark,
     background: const Color(0xFF212121),

@@ -40,7 +40,7 @@ dependencies:
   fluro: ^2.0.5
   url_strategy: ^0.2.0
   universal_html: ^2.2.4
-  flutter_widget_from_html_core: ^0.14.11
+  flutter_widget_from_html_core: ^0.15.1
 #  phone_number: ^2.1.0
   country_code_picker: ^3.0.0
   flutter_typeahead: ^5.2.0
