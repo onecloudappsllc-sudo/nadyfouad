@@ -150,7 +150,7 @@ class ReOrderProductItem extends StatelessWidget {
                         style: poppinsSemiBold.copyWith(fontSize: Dimensions.fontSizeSmall),
                       ))),
 
-                      Text('${cart.capacity} ${cart.unit}', textDirection: TextDirection.ltr,style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                      Text('${cart.capacity} ${cart.unit}', style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
 
                     ]),
                     const SizedBox(height: Dimensions.paddingSizeExtraSmall),

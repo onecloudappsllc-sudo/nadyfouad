@@ -12,10 +12,10 @@
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
   -->
   <base href="/">
-  <meta name="google-signin-client_id" content="831303168406-i745bmrif3bacjndf7dhl5m6r19sltr6.apps.googleusercontent.com">
+  <meta name="google-signin-client_id" content="YOUR_AUTH_CLIENT_ID">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="NADI FOUAD.">
+  <meta name="description" content="GroFresh.">
   <!-- DEMO ONLY -->
 
 
@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
 
-  <title>NADI FOUAD</title>
+  <title>GroFresh</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -40,7 +40,7 @@
 <body>
 
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfB1sYNbS-EzXvMaTjUIEwRmbcij-ghB4&callback=Function.prototype"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_MAP_KEY_HERE&callback=Function.prototype"></script>
 
 <script type="application/javascript" src="/assets/packages/flutter_inappwebview_web/assets/web/web_support.js" defer></script>
 
@@ -52,7 +52,7 @@
         navigator.serviceWorker.register("/firebase-messaging-sw.js");
       });
       window.addEventListener('flutter-first-frame', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js?v=1998547880');
+        navigator.serviceWorker.register('flutter_service_worker.js');
       });
     }
   </script>
@@ -100,12 +100,13 @@
 
 <script>
     const firebaseConfig = {
-        apiKey: "AIzaSyCQZZZ2bK32SbbA0fiwUlv8T02UewSqcSQ",
-        authDomain: "nadifuad-2da0f.firebaseapp.com",
-        projectId: "nadifuad-2da0f",
-        storageBucket: "nadifuad-2da0f.firebasestorage.app",
-        messagingSenderId: "1010750881009",
-        appId: "1:1010750881009:android:ac783822454e6dc0d3bd50"
+      apiKey: "AIzaSyDuBlqmsh9xw17osLOuEn7iqHtDlpkulcM",
+      authDomain: "grofresh-3986f.firebaseapp.com",
+      projectId: "grofresh-3986f",
+      storageBucket: "grofresh-3986f.appspot.com",
+      messagingSenderId: "250728969979",
+      appId: "1:250728969979:web:b79642a7b2d2400b75a25e",
+      measurementId: "G-X1HCG4K8HJ"
     };
 
     // Initialize Firebase

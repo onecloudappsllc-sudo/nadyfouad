@@ -210,7 +210,6 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
                  if(isWalletActive) const SizedBox(height: Dimensions.paddingSizeLarge),
 
                  if(paymentList.isNotEmpty) Row(children: [
-
                     Text(getTranslated('pay_via_online', context), style: poppinsBold.copyWith(fontSize: Dimensions.fontSizeDefault)),
                     const SizedBox(width: Dimensions.paddingSizeExtraSmall),
 
@@ -221,8 +220,7 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
 
                   ]),
                   const SizedBox(height: Dimensions.paddingSizeLarge),
-                  // Text(paymentList.length.toString()),
-                  // Text(paymentList[0].getWay.toString()),
+
                  if(paymentList.isNotEmpty) Expanded(child: PaymentMethodWidget(
                     paymentList: paymentList,
                     onTap: (index){

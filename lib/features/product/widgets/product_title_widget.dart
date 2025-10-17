@@ -121,7 +121,6 @@ class ProductTitleWidget extends StatelessWidget {
 
             Text(
               '${product!.capacity} ${product!.unit}',
-              textDirection: TextDirection.ltr,
               style: poppinsMedium.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeDefault),
             ),
             const SizedBox(height: Dimensions.paddingSizeDefault),

@@ -7,11 +7,11 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.nadi.fouad</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>NadyFouad</string>
+	<string>GroFresh</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -42,7 +42,7 @@
 	<key>FacebookClientToken</key>
 	<string>CLIENT-TOKEN</string>
 	<key>FacebookDisplayName</key>
-	<string>nadyfouad</string>
+	<string>Grofresh</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>tel</string>

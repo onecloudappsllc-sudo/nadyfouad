@@ -3,12 +3,12 @@ import 'package:flutter_grocery/common/enums/app_mode_enum.dart';
 import 'images.dart';
 
 class AppConstants {
-  static const String appName = 'NADI FOUAD';
+  static const String appName = 'GroFresh';
   static const double appVersion = 7.5;
   static const AppMode appMode = AppMode.release;
   static const String fontFamily = 'Poppins';
-  static const String baseUrl = 'https://nadyfouad.com/demo.nadyfouad.net';
-  static const String webHostUrl = 'https://nadyfouad.com/demo.nadyfouad.net';
+  static const String baseUrl = 'YOUR_BASE_URL_HERE';
+  static const String webHostUrl = 'YOUR_BASE_URL_HERE';
   static const String configUri = '/api/v1/config';
   static const String bannerUri = '/api/v1/banners';
   static const String categoryUri = '/api/v1/categories';
@@ -44,7 +44,6 @@ class AppConstants {
   static const String orderDetailsUri = '/api/v1/customer/order/details';
   static const String trackUri = '/api/v1/customer/order/track';
   static const String placeOrderUri = '/api/v1/customer/order/place';
-  static const String imageOrderUri = '/api/v1/customer/order/updateOrderImages';
   static const String lastLocationUri = '/api/v1/delivery-man/last-location?order_id=';
   static const String timeslotUri = '/api/v1/timeSlot';
   static const String tokenUri = '/api/v1/customer/cm-firebase-token';
@@ -95,7 +94,7 @@ class AppConstants {
   static const String userAddress = 'user_address';
 
   static const String searchAddress = 'search_address';
-  static const String topic = 'nadifouad';
+  static const String topic = 'grofresh';
   static const String onBoardingSkip = 'on_boarding_skip';
   static const String placeOrderData = 'place_order_data';
   static const String cookingManagement = 'cookies_management';
@@ -103,10 +102,9 @@ class AppConstants {
   static const String guestId = 'guest_id';
 
   static List<LanguageModel> languages = [
-    LanguageModel(imageUrl: Images.arabicFlag, languageName: 'العربية', countryCode: 'SA', languageCode: 'ar'),
     LanguageModel(imageUrl: Images.englandFlag, languageName: 'English', countryCode: 'US', languageCode: 'en'),
-    // LanguageModel(imageUrl: Images.bd, languageName: 'বাংলা', countryCode: 'BD', languageCode: 'bn'),
-
+    LanguageModel(imageUrl: Images.bd, languageName: 'বাংলা', countryCode: 'BD', languageCode: 'bn'),
+    LanguageModel(imageUrl: Images.arabicFlag, languageName: 'العربية', countryCode: 'SA', languageCode: 'ar'),
   ];
 
   static final List<Map<String, String>> walletTransactionSortingList = [

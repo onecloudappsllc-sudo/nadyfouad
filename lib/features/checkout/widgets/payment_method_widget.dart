@@ -64,7 +64,6 @@ class PaymentMethodWidget extends StatelessWidget {
                 ),
               ]),
 
-
               if(isOffline && isSelected && splashProvider.offlinePaymentModelList != null) SingleChildScrollView(
                 padding: const EdgeInsets.only(top: Dimensions.paddingSizeExtraLarge),
                 scrollDirection: Axis.horizontal,
@@ -87,10 +86,8 @@ class PaymentMethodWidget extends StatelessWidget {
                   ),
                 )).toList()),
               ),
-              // Text(orderProvider.selectedOfflineValue.toString()),
 
               if(isOffline && orderProvider.selectedOfflineValue != null && isSelected ) Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // Text(isOffline.toString()),
                 const SizedBox(height: Dimensions.paddingSizeDefault),
 
                 Text(getTranslated('payment_info', context), style: poppinsMedium,),

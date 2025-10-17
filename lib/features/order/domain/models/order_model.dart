@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter_grocery/common/models/product_model.dart';
 import 'package:flutter_grocery/features/profile/domain/models/userinfo_model.dart';
-
-import 'order_details_model.dart';
 
 class OrderModel {
   int? _id;
@@ -30,9 +27,8 @@ class OrderModel {
   int? _timeSlotId;
   String? _date;
   String? _deliveryDate;
-  double? _totalQuantity;
+  int? _totalQuantity;
   UserInfoModel? _customer;
-  String? _details;
   DeliveryMan? _deliveryMan;
   DeliveryAddress? _deliveryAddress;
   double? _extraDiscount;
@@ -67,11 +63,10 @@ class OrderModel {
         String? couponCode,
         String? orderType,
         int? branchId,
-        String? details,
         int? timeSlotId,
         String? date,
         String? deliveryDate,
-        double? totalQuantity,
+        int? totalQuantity,
         UserInfoModel? customer,
         DeliveryMan? deliveryMan,
         DeliveryAddress? deliveryAddress,
@@ -93,7 +88,6 @@ class OrderModel {
     _transactionReference = transactionReference;
     _deliveryAddressId = deliveryAddressId;
     _createdAt = createdAt;
-    _details = details;
     _updatedAt = updatedAt;
     _checked = checked;
     _deliveryManId = deliveryManId;
@@ -123,7 +117,6 @@ class OrderModel {
   String? get couponDiscountTitle => _couponDiscountTitle;
   String? get paymentStatus => _paymentStatus;
   String? get orderStatus => _orderStatus;
-  String? get details => _details;
   double? get totalTaxAmount => _totalTaxAmount;
   // ignore: unnecessary_getters_setters
   String? get paymentMethod => _paymentMethod;
@@ -145,7 +138,7 @@ class OrderModel {
   int? get timeSlotId => _timeSlotId;
   String? get date => _date;
   String? get deliveryDate => _deliveryDate;
-  double? get totalQuantity => _totalQuantity;
+  int? get totalQuantity => _totalQuantity;
   UserInfoModel? get customer => _customer;
   DeliveryMan? get deliveryMan => _deliveryMan;
   DeliveryAddress? get deliveryAddress => _deliveryAddress;
@@ -181,16 +174,11 @@ class OrderModel {
     _date = json['date'];
     _deliveryDate = json['delivery_date'];
     print('deliery date is-------${json['delivery_date']}');
-    if(json['total_quantity']!=null) {
-      log(json['total_quantity']);
-      _totalQuantity = double.parse(json['total_quantity'].toString()) ?? 0.0;
-    }else{
-      _totalQuantity = double.parse('0');
-    }
+
+    _totalQuantity = json['total_quantity'];
     _customer = json['customer'] != null
         ? UserInfoModel.fromJson(json['customer'])
         : null;
-    _details = json['details'][0]['delivery_date'];
     _deliveryMan = json['delivery_man'] != null
         ? DeliveryMan.fromJson(json['delivery_man'])
         : null;

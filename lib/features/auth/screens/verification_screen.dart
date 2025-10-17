@@ -248,8 +248,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                   session: '${widget.session}',
                                   otp: verificationProvider.verificationCode,
                                 );
-                              }
-                              else if(isPhone && AuthHelper.isPhoneVerificationEnable(config)){
+                              }else if(isPhone && AuthHelper.isPhoneVerificationEnable(config)){
                                 verificationProvider.verifyPhoneForOtp(userInput).then((value){
                                   final (responseModel, tempToken) = value;
                                   if((responseModel != null && responseModel.isSuccess) && tempToken == null) {
@@ -279,8 +278,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
                                 });
                               }
-                            }
-                            else if (widget.fromPage == FromPage.login.name) {
+                            }else if (widget.fromPage == FromPage.login.name) {
                               if(AuthHelper.isCustomerVerificationEnable(config)){
                                 if(isPhone && isFirebaseOTP){
                                   authProvider.firebaseOtpLogin(
@@ -288,8 +286,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                     session: '${widget.session}',
                                     otp: verificationProvider.verificationCode,
                                   );
-                                }
-                                else if(isPhone && AuthHelper.isPhoneVerificationEnable(config)){
+                                }else if(isPhone && AuthHelper.isPhoneVerificationEnable(config)){
                                   verificationProvider.verifyPhone(userInput.trim()).then((value) {
                                     if (value.isSuccess) {
                                       if (authProvider.isActiveRememberMe) {
@@ -308,8 +305,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                       Navigator.pushNamedAndRemoveUntil(Get.context!, RouteHelper.getMainRoute(), (route) => false);
                                     }
                                   });
-                                }
-                                else if(!isPhone && AuthHelper.isEmailVerificationEnable(config)){
+                                }else if(!isPhone && AuthHelper.isEmailVerificationEnable(config)){
                                   print("-----------------------(Verification Screen)---------------UserInput: $userInput");
                                   verificationProvider.verifyEmail(userInput).then((value) {
                                     if (value.isSuccess) {
@@ -327,8 +323,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                                   });
                                 }
                               }
-                            }
-                            else if(widget.fromPage == FromPage.profile.name){
+                            }else if(widget.fromPage == FromPage.profile.name){
 
                               String type = isPhone ? 'phone': 'email';
                               verificationProvider.verifyProfileInfo(userInput, type, widget.session).then((value){

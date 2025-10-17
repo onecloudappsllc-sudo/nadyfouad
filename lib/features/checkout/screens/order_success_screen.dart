@@ -33,14 +33,8 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   // bool _isReload = true;
   @override
   void initState() {
-    if (widget.status == 0) {
-      final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-
-      // Call trackOrder
-      orderProvider.trackOrder(widget.orderID, null, context, false, isUpdate: false);
-
-
-
+    if(widget.status == 0) {
+      Provider.of<OrderProvider>(context, listen: false).trackOrder(widget.orderID, null, context, false, isUpdate: false);
     }
     super.initState();
   }
@@ -87,10 +81,6 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
 
                     Text(
                       getTranslated(widget.status == 0 ? 'order_placed_successfully' : widget.status == 1 ? 'payment_failed' : 'payment_cancelled', context),
-                      style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).primaryColor),
-                      textAlign: TextAlign.center,
-                    ),Text(
-                      'سيتم التوصيل في يوم ' +orderProvider.orderDetails![0].delivery_date.toString(),
                       style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).primaryColor),
                       textAlign: TextAlign.center,
                     ),

@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
 import 'package:flutter_grocery/common/widgets/custom_alert_dialog_widget.dart';
@@ -10,7 +8,6 @@ import 'package:flutter_grocery/common/widgets/custom_image_widget.dart';
 import 'package:flutter_grocery/common/widgets/custom_shadow_widget.dart';
 import 'package:flutter_grocery/common/widgets/custom_single_child_list_widget.dart';
 import 'package:flutter_grocery/common/widgets/custom_zoom_widget.dart';
-import 'package:flutter_grocery/features/checkout/widgets/image_note_upate_widget.dart';
 import 'package:flutter_grocery/features/order/domain/models/order_model.dart';
 import 'package:flutter_grocery/features/order/domain/models/timeslote_model.dart';
 import 'package:flutter_grocery/features/order/widgets/payment_info_widget.dart';
@@ -31,9 +28,6 @@ import 'package:flutter_grocery/features/order/widgets/order_map_info_widget.dar
 import 'package:flutter_grocery/features/order/widgets/ordered_product_list_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../../utill/app_constants.dart';
-import '../../checkout/widgets/image_note_upload_widget.dart';
-
 class OrderInfoWidget extends StatelessWidget {
   final OrderModel? orderModel;
   final TimeSlotModel? timeSlot;
@@ -46,7 +40,7 @@ class OrderInfoWidget extends StatelessWidget {
 
     return Consumer<OrderProvider>(
       builder: (context, orderProvider, _) {
-        double itemsQuantity = OrderHelper.getOrderItemQuantity(orderProvider.orderDetails);
+        int itemsQuantity = OrderHelper.getOrderItemQuantity(orderProvider.orderDetails);
 
 
         return Column(
@@ -106,7 +100,7 @@ class OrderInfoWidget extends StatelessWidget {
                     Text('${getTranslated('estimate_delivery_date', context)}: ', style: poppinsRegular),
                     const SizedBox(width: Dimensions.paddingSizeExtraSmall),
 
-                    Text(orderProvider.trackModel!.details!.toString(), style: poppinsMedium),
+                    Text(DateConverterHelper.isoStringToLocalDateOnly(orderProvider.trackModel!.deliveryDate!), style: poppinsMedium),
                   ]),
                 ),
 
@@ -181,7 +175,7 @@ class OrderInfoWidget extends StatelessWidget {
                         Text('${getTranslated('estimate_delivery_date', context)}: ', style: poppinsRegular),
                         const SizedBox(width: Dimensions.paddingSizeExtraSmall),
                       
-                        Text(orderProvider.trackModel!.details!, style: poppinsMedium),
+                        Text(DateConverterHelper.isoStringToLocalDateOnly(orderProvider.trackModel!.deliveryDate!), style: poppinsMedium),
                       ]),
                     ),
                   ),
@@ -356,11 +350,7 @@ class OrderInfoWidget extends StatelessWidget {
                 color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.6),
               )),
             ) : const SizedBox(),
-            // const ImageNoteUploadWidget(),
 
-            // Text(orderProvider.trackModel!.paymentMethod.toString()),
-
-            orderProvider.trackModel?.paymentMethod=='offline_payment' && orderProvider.trackModel?.orderImageList?.length==0 ?  ImageNoteUpdateWidget(orderId:orderProvider.trackModel!.id! ,):SizedBox(),
            if(orderProvider.trackModel?.orderImageList?.isNotEmpty ?? false) Container(
              padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
              decoration: BoxDecoration(
@@ -458,6 +448,5 @@ class _OrderTypeWidget extends StatelessWidget {
   }
 
 }
-
 
 

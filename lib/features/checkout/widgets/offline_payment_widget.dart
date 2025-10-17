@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_grocery/common/widgets/key_value_item_widget.dart';
 import 'package:flutter_grocery/features/order/domain/models/offline_payment_model.dart';
 import 'package:flutter_grocery/helper/order_helper.dart';
@@ -95,7 +94,7 @@ class _OfflinePaymentWidgetState extends State<OfflinePaymentWidget> {
                         await scrollController!.highlight(splashProvider.offlinePaymentModelList!.indexOf(offline));
                       },
                       child: Container(
-                        width: ResponsiveHelper.isMobile() ? MediaQuery.sizeOf(context).width * 0.8 : 300,
+                        width: ResponsiveHelper.isMobile() ? MediaQuery.sizeOf(context).width * 0.7 : 300,
                         constraints: const BoxConstraints(minHeight: 160),
                         padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
                         margin: const EdgeInsets.all(Dimensions.paddingSizeSmall),
@@ -167,33 +166,10 @@ class _OfflinePaymentWidgetState extends State<OfflinePaymentWidget> {
               onPressed: ()=> Navigator.pop(context),
             )),
             const SizedBox(width: Dimensions.paddingSizeDefault),
-            SizedBox(width: 100, child: CustomButtonWidget(
-              borderRadius: Dimensions.radiusSizeLarge,
-              buttonText: getTranslated('submit', context), width: 100,
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: (){
 
-                if (orderProvider.formKey.currentState?.validate() ?? false) {
-                  // Collect entered values
-                  List<Map<String, String>> fieldData = [];
-                  orderProvider.field.forEach((key, controller) {
-                    fieldData.add({key: controller.text});
-                  });
-
-                  // Save to provider
-                  orderProvider.setOfflineSelectedValue(fieldData);
-
-                  // Save selected payment method
-                  orderProvider.savePaymentMethod(method: orderProvider.paymentMethod);
-
-                  Navigator.pop(context);
-                }
-
-              },
+            const SizedBox(width: 130, child: PlaceOrderButtonWidget(
+              fromOfflinePayment: true,
             )),
-            // const SizedBox(width: 130, child: PlaceOrderButtonWidget(
-            //   fromOfflinePayment: true,
-            // )),
 
           ]),
 
@@ -211,32 +187,10 @@ class _BillInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: methodList.map((method) {
-        final valueText = '${method.fieldData}';
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: KeyValueItemWidget(
-                item: method.fieldName ?? '',
-                value: valueText,
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.copy, size: 18, color: Colors.grey[700]),
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: valueText));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Copied: $valueText")),
-                );
-              },
-            ),
-          ],
-        );
-      }).toList(),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: methodList.map((method) => KeyValueItemWidget(
+      item: method.fieldName ?? '',
+      value: '${method.fieldData}',
+    )).toList());
   }
 }
 

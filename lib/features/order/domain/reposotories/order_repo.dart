@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_grocery/data/datasource/remote/dio/dio_client.dart';
 import 'package:flutter_grocery/data/datasource/remote/exception/api_error_handler.dart';
 import 'package:flutter_grocery/common/models/place_order_model.dart';
@@ -14,42 +11,10 @@ import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:path/path.dart' as p;
+
 class OrderRepo {
   final DioClient? dioClient;
   OrderRepo({required this.dioClient});
-
-  Future<Response> updateOrderImages(int orderId, List<XFile> images) async {
-    final formData = FormData();
-
-    for (final x in images) {
-      if (kIsWeb) {
-        final bytes = await x.readAsBytes();
-        formData.files.add(MapEntry(
-          'order_images[]',
-          MultipartFile.fromBytes(bytes, filename: x.name),
-        ));
-      } else {
-        formData.files.add(MapEntry(
-          'order_images[]',
-          await MultipartFile.fromFile(x.path, filename: p.basename(x.path)),
-        ));
-      }
-    }
-
-    return await dioClient!.post(
-      // If dioClient already has baseUrl, do NOT prefix with AppConstants.baseUrl here
-      '/api/v1/customer/order/updateOrderImages/$orderId',
-      data: formData,
-      options: Options(
-        contentType: 'multipart/form-data',
-        headers: {
-          'Authorization': 'Bearer ${AppConstants.token}',
-          'Accept': 'application/json',
-        },
-      ),
-    );
-  }
 
   Future<ApiResponseModel> getOrderList() async {
     try {
@@ -97,7 +62,6 @@ class OrderRepo {
 
   Future<ApiResponseModel> placeOrder(PlaceOrderModel orderBody, {List<XFile?>? imageNote}) async {
     try {
-      print(orderBody);
       final response = await dioClient!.postMultipart(
         AppConstants.placeOrderUri,
         files: imageNote ?? [],

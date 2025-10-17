@@ -280,7 +280,7 @@ class ProductWidget extends StatelessWidget {
                               ),
                             )),
 
-                            Text('${product.capacity} ${product.unit}', style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),textDirection: TextDirection.ltr),
+                            Text('${product.capacity} ${product.unit}', style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
 
                             Flexible(
                               child: Row(children: [
@@ -434,7 +434,6 @@ class _ProductGridWidget extends StatelessWidget {
 
                     isCenter ? Text(
                       '${product.capacity} ${product.unit}',
-                      textDirection: TextDirection.ltr,
                       style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
                       maxLines: 1, overflow: TextOverflow.ellipsis,
                     ) : const SizedBox(),
@@ -472,7 +471,6 @@ class _ProductGridWidget extends StatelessWidget {
                       children: [
                         Text(
                           '${product.capacity} ${product.unit}',
-                          textDirection: TextDirection.ltr,
                           style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
                           maxLines: 1, overflow: TextOverflow.ellipsis,
                         ),

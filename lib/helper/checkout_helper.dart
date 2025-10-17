@@ -108,7 +108,7 @@ class CheckOutHelper {
 
 
   static bool isBranchAvailable({required List<Branches> branches, required Branches selectedBranch, required AddressModel selectedAddress}){
-    bool isAvailable = branches.length == 1 ;
+    bool isAvailable = branches.length == 1 && (branches[0].latitude == null || branches[0].latitude!.isEmpty);
 
     if(!isAvailable) {
       double distance = Geolocator.distanceBetween(

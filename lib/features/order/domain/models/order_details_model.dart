@@ -6,12 +6,11 @@ class OrderDetailsModel {
   ProductDetails? productDetails;
   double? discountOnProduct;
   String? discountType;
-  double? quantity;
+  int? quantity;
   double? taxAmount;
   String? createdAt;
   String? updatedAt;
   String? variant;
-  String? delivery_date;
   int? timeSlotId;
   // String? variation;
   bool? isVatInclude;
@@ -32,7 +31,6 @@ class OrderDetailsModel {
       this.createdAt,
       this.updatedAt,
       this.variant,
-      this.delivery_date,
         this.timeSlotId,
         // this.variation,
         this.isVatInclude,
@@ -48,10 +46,9 @@ class OrderDetailsModel {
     // variation = json['variation'];
     discountOnProduct = json['discount_on_product'].toDouble();
     discountType = json['discount_type'];
-    quantity = json['quantity'].toDouble();
+    quantity = json['quantity'];
     taxAmount = json['tax_amount'].toDouble();
     createdAt = json['created_at'];
-    delivery_date = json['delivery_date'];
     updatedAt = json['updated_at'];
     isVatInclude = '${json['vat_status']}' == 'included';
     if(json['variant'] != null){
@@ -85,7 +82,6 @@ class OrderDetailsModel {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['variant'] = variant;
-    data['delivery_date'] = delivery_date;
     data['time_slot_id'] = timeSlotId;
     // data['variation'] = variation;
     data['formatted_variation'] = formattedVariation;

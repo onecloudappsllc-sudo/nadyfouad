@@ -46,8 +46,7 @@ class DeliveryAddressWidget extends StatelessWidget {
               (configModel.googleMapStatus ?? false) &&
               CheckOutHelper.getDeliveryChargeType() == DeliveryChargeType.distance.name
               && ((deliveryAddress.latitude != null && deliveryAddress.latitude!.isNotEmpty) && (deliveryAddress.longitude != null && deliveryAddress.longitude!.isNotEmpty))
-          )
-          {
+          ){
             isAvailable = CheckOutHelper.isBranchAvailable(
               branches: configModel.branches ?? [],
               selectedBranch: configModel.branches![orderProvider.branchIndex],

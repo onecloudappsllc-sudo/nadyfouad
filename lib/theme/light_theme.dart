@@ -3,7 +3,7 @@ import 'package:flutter_grocery/utill/app_constants.dart';
 
 ThemeData light = ThemeData(
   fontFamily: AppConstants.fontFamily,
-  primaryColor: const Color(0xFF1C1556),
+  primaryColor: const Color(0xFF01684B),
   secondaryHeaderColor: const Color(0xFFEEFCF8),
   brightness: Brightness.light,
   cardColor: Colors.white,
@@ -23,8 +23,8 @@ ThemeData light = ThemeData(
   colorScheme: ColorScheme(
     background: const Color(0xFFFCFCFC),
     brightness: Brightness.light,
-    primary: const Color(0xFF1C1556),
-    onPrimary: const Color(0xFF1C1556),
+    primary: const Color(0xFF01684B),
+    onPrimary: const Color(0xFF01684B),
     secondary: const Color(0xFFEEFCF8),
     onSecondary: const Color(0xFFEFE6FE),
     error: Colors.redAccent,

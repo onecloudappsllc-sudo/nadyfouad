@@ -52,7 +52,7 @@ class _UpsideExpansionWidgetState extends State<UpsideExpansionWidget> {
           },
           trailing: const SizedBox.shrink(), // Remove the default icon
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          // showTrailingIcon: false,
+          showTrailingIcon: false,
           children: const [],
         ),
       )

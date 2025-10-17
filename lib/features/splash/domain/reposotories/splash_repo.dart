@@ -61,15 +61,9 @@ class SplashRepo {
 
   Future<ApiResponseModel> getDeliveryInfo() async {
     try {
-      print('response done!');
-
       final response = await dioClient!.get("${AppConstants.baseUrl}${AppConstants.getDeliveryInfo}");
-
-      print('response done!');
-
       return ApiResponseModel.withSuccess(response);
     } catch (e) {
-
       return ApiResponseModel.withError(ApiErrorHandler.getMessage(e));
     }
   }

@@ -9,47 +9,37 @@
 .history
 .svn/
 
-# IntelliJ
+# IntelliJ related
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# VS Code
-.vscode/
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
 
-# Flutter/Dart/Pub
+# Flutter/Dart/Pub related
 **/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
 .pub-cache/
 .pub/
-build/
-
-# iOS
-ios/Pods/
-ios/.symlinks/
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
-ios/Flutter/.generated/
-ios/Flutter/App.framework
-ios/Flutter/Generated.xcconfig
-ios/ServiceDefinitions.json
-ios/Runner/GeneratedPluginRegistrant.*
-ios/Podfile.lock
-ios/.generated/
-
-# Android
-android/.gradle
-android/captures/
-android/local.properties
-
-# Web
-web/flutter_service_worker.js
-
-# Firebase
-.firebase/
+/build/
+/node_modules
 .firebaserc
+.firebase
 firebase.json
+get_changed_files.sh
+
+# Web related
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json

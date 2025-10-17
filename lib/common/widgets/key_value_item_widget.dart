@@ -17,10 +17,10 @@ class KeyValueItemWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeExtraSmall),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(item, style: poppinsRegular,maxLines: 1, overflow: TextOverflow.ellipsis),
-        // const SizedBox(width: Dimensions.paddingSizeSmall),
+        Expanded(flex : 1, child: Text(item, style: poppinsRegular,maxLines: 1, overflow: TextOverflow.ellipsis)),
+        const SizedBox(width: Dimensions.paddingSizeSmall),
 
-        Expanded(flex: 2, child: Text(' : $value',
+        Expanded(flex: 2, child: Text(' :  $value',
           style: poppinsRegular, maxLines: 1,
           overflow: TextOverflow.ellipsis,
         )),

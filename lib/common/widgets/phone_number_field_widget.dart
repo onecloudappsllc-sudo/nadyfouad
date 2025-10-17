@@ -30,24 +30,13 @@ class PhoneNumberFieldWidget extends StatelessWidget {
       ),
       child: Row(children: [
         CountryCodePickerWidget(
-          countryList: [
-            {
-              'name': 'United Arab Emirates',
-              'code': 'AE',
-              'dial_code': '+971',
-              'flag': '🇦🇪'
-            }
-          ],
-
-          initialSelection: '+971', // UAE dial code
-          favorite: ['+971'], // UAE dial code
-          showDropDownButton: false,
+          onChanged: (CountryCode value)=> onValueChange(value.code!),
+          initialSelection: countryCode,
+          favorite: [countryCode ?? ''],
+          showDropDownButton: true,
           padding: EdgeInsets.zero,
           showFlagMain: true,
-          showFlagDialog: false,
-          enabled: false,
-
-          dialogBackgroundColor: Theme.of(context).cardColor,
+          textStyle: TextStyle(color: Theme.of(context).textTheme.displayLarge!.color),
 
         ),
 

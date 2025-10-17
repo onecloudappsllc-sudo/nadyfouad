@@ -84,10 +84,6 @@ class _AddressDetailsWidgetState extends State<AddressDetailsWidget> {
     final ConfigModel? configModel = Provider.of<SplashProvider>(context, listen: false).configModel;
     final Size size = MediaQuery.of(context).size;
     print("----------(Address)---------${locationProvider.address}");
-    if (widget.contactPersonNumberController.text.startsWith("0")) {
-      widget.contactPersonNumberController.text =
-          widget.contactPersonNumberController.text.replaceFirst("0", "");
-    }
 
     return Container(
       decoration: ResponsiveHelper.isDesktop(context) ?  BoxDecoration(

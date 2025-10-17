@@ -27,18 +27,15 @@ class DetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OrderProvider orderProvider = Provider.of<OrderProvider>(context, listen: false);
     CheckOutModel? checkOutData = Provider.of<OrderProvider>(context, listen: false).getCheckOutData;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-      // Text(orderProvider.selectedPaymentMethod!.getWay.toString()),
 
       const PaymentSectionWidget(),
 
       PartialPayWidget(totalPrice: (checkOutData?.amount ?? 0) + (checkOutData?.deliveryCharge ?? 0)),
 
-      orderProvider.selectedPaymentMethod?.getWay.toString()=='offline'? const ImageNoteUploadWidget():SizedBox(),
+      const ImageNoteUploadWidget(),
 
       CustomShadowWidget(
         margin: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeSmall),

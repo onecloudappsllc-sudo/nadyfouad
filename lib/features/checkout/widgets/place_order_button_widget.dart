@@ -124,29 +124,35 @@ class PlaceOrderButtonWidget extends StatelessWidget {
               borderRadius: fromOfflinePayment ? Dimensions.radiusSizeLarge : Dimensions.radiusSizeDefault,
             buttonText: getTranslated(fromOfflinePayment ? 'submit' : 'place_order', context),
             onPressed: () async{
-
+              if(fromOfflinePayment){
+                Navigator.pop(context);
+              }
 
               final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
               final ProfileProvider profileProvider = Provider.of<ProfileProvider>(context, listen: false);
 
 
-               if((orderProvider.selectedPaymentMethod == null ? (orderProvider.selectedOfflineValue == null) : orderProvider.selectedPaymentMethod == null )){
+              if(fromOfflinePayment && orderProvider.getOfflinePaymentData().isEmpty){
+                showCustomSnackBarHelper(getTranslated('input_your_data_properly', context),isError: true);
+
+              }else if((orderProvider.selectedPaymentMethod == null ? (orderProvider.selectedOfflineValue == null) : orderProvider.selectedPaymentMethod == null )){
                 showCustomSnackBarHelper(getTranslated('add_a_payment_method', context));
 
               }  else if (!isSelfPickup && orderProvider.addressIndex == -1) {
                 showCustomSnackBarHelper(getTranslated('select_delivery_address', context),isError: true);
 
-              }else if (!isSelfPickup && isKmWiseCharge && orderProvider.distance == -1) {
+              } else if (orderProvider.timeSlots == null || orderProvider.timeSlots!.isEmpty) {
+                showCustomSnackBarHelper(getTranslated('select_a_time', context),isError: true);
+
+              } else if (!isSelfPickup && isKmWiseCharge && orderProvider.distance == -1) {
                 showCustomSnackBarHelper(getTranslated('delivery_fee_not_set_yet', context),isError: true);
 
               } else if((CheckOutHelper.getDeliveryChargeType() == DeliveryChargeType.area.name) && (orderProvider.selectedAreaID == null) && !isSelfPickup){
                 await scrollController?.animateTo(0, duration: const Duration(milliseconds: 100), curve: Curves.ease);
                 _openDropdown();
               }else {
-                 print('elseeeeee');
                 List<CartModel> cartList = Provider.of<CartProvider>(context, listen: false).cartList;
                 List<Cart> carts = [];
-                 print('elseeeeee1');
 
                 for (int index = 0; index < cartList.length; index++) {
                   Cart cart = Cart(
@@ -158,11 +164,6 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                   carts.add(cart);
                 }
 
-                 print('-----------------------------------------');
-                 print(orderProvider.selectedOfflineValue?.length);
-                 // print(orderProvider.selectedOfflineValue?[1]);
-                 // print(orderProvider.selectedOfflineMethod!.methodInformations![0].informationRequired);
-
                 PlaceOrderModel placeOrderBody = PlaceOrderModel(
                   cart: carts, orderType: checkOutData?.orderType,
                   couponCode: checkOutData?.couponCode,
@@ -172,14 +173,14 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                       ? Provider.of<LocationProvider>(context, listen: false).addressList![orderProvider.addressIndex].id
                       : 0, distance: isSelfPickup ? 0 : orderProvider.distance,
                   couponDiscountAmount: Provider.of<CouponProvider>(context, listen: false).discount,
-
+                  timeSlotId: orderProvider.timeSlots![orderProvider.selectTimeSlot].id,
                   paymentMethod: orderProvider.selectedOfflineValue != null
-                      ? 'offline_payment' : orderProvider.selectedPaymentMethod!.getWay=='offline'?'offline_payment':orderProvider.selectedPaymentMethod!.getWay!,
+                      ? 'offline_payment' : orderProvider.selectedPaymentMethod!.getWay!,
                   deliveryDate: orderProvider.getDateList()[orderProvider.selectDateSlot],
                   couponDiscountTitle: '',
                   orderAmount: (checkOutData!.amount ?? 0) + (orderProvider.deliveryCharge ?? 0) + (weight ?? 0),
                   selectedDeliveryArea: orderProvider.selectedAreaID,
-                  paymentInfo: orderProvider.selectedPaymentMethod!.getWay=='offline'  ?  OfflinePaymentInfo(
+                  paymentInfo: orderProvider.selectedOfflineValue != null ?  OfflinePaymentInfo(
                     methodFields: CheckOutHelper.getOfflineMethodJson(orderProvider.selectedOfflineMethod?.methodFields),
                     methodInformation: orderProvider.selectedOfflineValue,
                     paymentName: orderProvider.selectedOfflineMethod?.methodName,
@@ -188,21 +189,14 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                   isPartial: orderProvider.partialAmount == null ? '0' : '1' ,
                 );
 
-                 print(placeOrderBody.paymentMethod);
 
                 if(placeOrderBody.paymentMethod == 'wallet_payment'
                     || placeOrderBody.paymentMethod == 'cash_on_delivery'
-                    || placeOrderBody.paymentMethod == 'offline_payment'
-                    || placeOrderBody.paymentMethod == 'visa_on_delivery'
-                ){
-                  print('elseeeeee4');
+                    || placeOrderBody.paymentMethod == 'offline_payment'){
 
                   orderProvider.placeOrder(placeOrderBody, _callback);
-                  print('elseeeeee5');
 
                 } else{
-                  print('elseeeeee6');
-
                   String? hostname = html.window.location.hostname;
                   String protocol = html.window.location.protocol;
                   String port = html.window.location.port;
@@ -216,7 +210,6 @@ class PlaceOrderButtonWidget extends StatelessWidget {
 
                   String tokenUrl = convert.base64Encode(convert.utf8.encode(ResponsiveHelper.isWeb() ? webUrl : url));
                   String selectedUrl = '${AppConstants.baseUrl}/payment-mobile?token=$tokenUrl&&payment_method=${orderProvider.selectedPaymentMethod?.getWay}&&payment_platform=${kIsWeb ? 'web' : 'app'}&&is_partial=${orderProvider.partialAmount == null ? '0' : '1'}';
-                  print('mafeeeeesh error hena');
 
 
                   orderProvider.clearPlaceOrder().then((_) => orderProvider.setPlaceOrder(placeOrder).then((value) {
@@ -243,9 +236,7 @@ class PlaceOrderButtonWidget extends StatelessWidget {
 
   void _callback(bool isSuccess, String message, String orderID) async {
     if (isSuccess) {
-      _loadOrderDetails(orderID);
       Provider.of<CartProvider>(Get.context!, listen: false).clearCartList();
-      Provider.of<OrderProvider>(Get.context!, listen: false).stopLoader();
       Provider.of<OrderProvider>(Get.context!, listen: false).stopLoader();
       if ( Provider.of<OrderProvider>(Get.context!, listen: false).paymentMethod?.getWay != 'cash_on_delivery') {
         Navigator.pushReplacementNamed(Get.context!,
@@ -259,20 +250,6 @@ class PlaceOrderButtonWidget extends StatelessWidget {
       }
     } else {
       showCustomSnackBarHelper(message);
-    }
-  }
-  Future<void> _loadOrderDetails(String orderId) async {
-    try {
-      final orderProvider = Provider.of<OrderProvider>(Get.context!, listen: false);
-      await orderProvider.getOrderDetails(orderID: orderId.toString());
-
-      // Now you can access the details through orderProvider._orderDetails
-      if (orderProvider.orderDetails != null) {
-        // Do something with the order details
-        print('Order details loaded: ${orderProvider.orderDetails!.length} items');
-      }
-    } catch (e) {
-      print('Error loading order details: $e');
     }
   }
 }

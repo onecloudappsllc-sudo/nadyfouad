@@ -97,7 +97,7 @@ class CartItemWidget extends StatelessWidget {
                         ))),
                       ]),
 
-                      Text('${cart.capacity} ${cart.unit}',textDirection: TextDirection.ltr, style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
+                      Text('${cart.capacity} ${cart.unit}', style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
                       const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
 
@@ -164,9 +164,7 @@ class CartItemWidget extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Row(children: [
-                        Text('${cart.capacity} ${cart.unit}',
-                            textDirection: TextDirection.ltr,
-                            style: poppinsMedium.copyWith(
+                        Text('${cart.capacity} ${cart.unit}', style: poppinsMedium.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           color: Theme.of(context).disabledColor,
                         )),
@@ -222,7 +220,7 @@ class CartItemWidget extends StatelessWidget {
                               cartProvider.removeItemFromCart(index, context);
                               cartProvider.setExistData(null);
                             },
-                            icon: const RotatedBox(quarterTurns: 2, child: Icon(Icons.delete, color: Colors.red, size: 20)),
+                            icon: const RotatedBox(quarterTurns: 2, child: Icon(CupertinoIcons.delete, color: Colors.red, size: 20)),
                           ),
                         ) : InkWell(
                           onTap: () {

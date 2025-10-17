@@ -234,8 +234,8 @@ class OrderHelper{
     return trackOrder != null && trackOrder.orderType == OrderConstants.deliveryType && trackOrder.deliveryAddress != null;
   }
 
-  static double getOrderItemQuantity(List<OrderDetailsModel>? orderDetailsList){
-    double quantity = 0;
+  static int getOrderItemQuantity(List<OrderDetailsModel>? orderDetailsList){
+    int quantity = 0;
     if(orderDetailsList != null) {
       for(int i = 0; i < orderDetailsList.length; i++) {
         quantity = quantity + (orderDetailsList[i].quantity ?? 0);

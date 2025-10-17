@@ -50,7 +50,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   void initState() {
-    countryCode = '+971';
+    countryCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel!.country!).dialCode;
     Provider.of<AuthProvider>(context, listen: false).updateRegistrationErrorMessage('', false);
 
     super.initState();
@@ -119,7 +119,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     // for phone section
                     CustomTextFieldWidget(
                       countryDialCode: countryCode,
-
                       onCountryChanged: (CountryCode value) {
                         countryCode = value.dialCode;
                         print("---------------Here $countryCode");
@@ -266,7 +265,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     String confirmPassword = _confirmPasswordController.text.trim();
 
     String phoneWithCountryCode = (countryCode ?? '') + number;
-    print(phoneWithCountryCode);
     bool isPhoneValid = PhoneNumberCheckerHelper.isPhoneValidWithCountryCode(phoneWithCountryCode);
 
     if (firstName.isEmpty) {
@@ -299,15 +297,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }else if (EmailCheckerHelper.isNotValid(email)) {
       showCustomSnackBarHelper(getTranslated('enter_valid_email', context));
 
-    }
-    else {
+    }else {
+
       print("--------------------(CREATE NEW ACCOUNT) $countryCode and $number");
-
-      // Remove leading zero if present
-      if (number.startsWith("0")) {
-        number = number.replaceFirst("0", "");
-      }
-
       SignUpModel signUpModel = SignUpModel(
         fName: firstName,
         lName: lastName,
@@ -324,7 +316,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         }
       });
     }
-
   }
 
 }

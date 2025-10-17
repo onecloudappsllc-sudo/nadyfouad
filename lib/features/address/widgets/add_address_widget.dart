@@ -86,11 +86,8 @@ class AddAddressWidget extends StatelessWidget {
           onPressed: locationProvider.loading ? null : () {
             final SplashProvider splashProvider = Provider.of<SplashProvider>(context, listen: false);
             List<Branches> branches = splashProvider.configModel!.branches!;
-            bool isAvailable = branches.length == 1;
-            print('isAvailableisAvailableisAvailableisAvailableisAvailableisAvailableisAvailableisAvailableisAvailableisAvailableisAvailableisAvailableisAvailable');
-            print(isAvailable);
-            print( branches.length);
-            print( branches[0].latitude);
+            bool isAvailable = branches.length == 1 && (branches[0].latitude == null || branches[0].latitude!.isEmpty);
+
             if(!isAvailable) {
               if(splashProvider.configModel?.googleMapStatus ?? false){
                 for (Branches branch in branches) {

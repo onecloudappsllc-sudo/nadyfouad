@@ -24,10 +24,7 @@ class PhoneNumberCheckerHelper{
     bool isValid = false;
     try {
       PhoneNumber phoneNumber = PhoneNumber.parse(numberWithCountryCode);
-      log(" $phoneNumber");
-
       isValid = phoneNumber.isValid(type: PhoneNumberType.mobile);
-      print(isValid);
       return isValid;
     } catch (e) {
       log('Phone Number is not parsing: $e');

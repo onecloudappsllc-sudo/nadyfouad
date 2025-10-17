@@ -1,6 +1,4 @@
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/models/place_order_model.dart';
 import 'package:flutter_grocery/features/checkout/domain/models/check_out_model.dart';
@@ -27,11 +25,8 @@ import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../helper/route_helper.dart';
 
 class OrderProvider extends ChangeNotifier {
   final OrderRepo? orderRepo;
@@ -101,23 +96,6 @@ class OrderProvider extends ChangeNotifier {
 
   set setReorderIndex(int value) {
     _reOrderIndex = value;
-  }
-
-
-  Future<void> updateOrderImages(int orderId, List<XFile> images, BuildContext context) async {
-    try {
-      final response = await orderRepo!.updateOrderImages(orderId, images);
-
-      if (response.statusCode == 200) {
-        showCustomSnackBarHelper("Images updated successfully", isError: false);
-        await getOrderDetails(orderID: orderId.toString());
-        Get.navigator!.pushReplacementNamed(RouteHelper.orderListScreen);
-      } else {
-        showCustomSnackBarHelper("Failed to update images", isError: true);
-      }
-    } catch (e) {
-      showCustomSnackBarHelper("Error: ${e.toString()}", isError: true);
-    }
   }
 
 
@@ -305,8 +283,6 @@ class OrderProvider extends ChangeNotifier {
 
     _isLoading = true;
     notifyListeners();
-    print('000000000000000000000000000000000000000000000');
-    print(placeOrderBody.couponCode);
     ApiResponseModel apiResponse = await orderRepo!.placeOrder(placeOrderBody, imageNote: imageNoteProvider.imageFiles ?? []);
     _isLoading = false;
 

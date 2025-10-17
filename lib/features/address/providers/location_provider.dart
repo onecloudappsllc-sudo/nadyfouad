@@ -14,7 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:http/http.dart' as http;
+
 class LocationProvider with ChangeNotifier {
   final SharedPreferences? sharedPreferences;
   final LocationRepo locationRepo;
@@ -166,42 +166,8 @@ class LocationProvider with ChangeNotifier {
       _updateAddAddressData = true;
     }
   }
-  Future<Map<String, dynamic>?> getAddressDetailsFromCoordinates(double lat, double lng) async {
-    const apiKey = 'AIzaSyDfB1sYNbS-EzXvMaTjUIEwRmbcij-ghB4';
-    final url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$apiKey';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      }
-      return null;
-    } catch (e) {
-      debugPrint('Geocoding error: $e');
-      return null;
-    }
-  }
-  Future<String?> getCityFromCoordinates(double lat, double lng) async {
-    const apiKey = 'AIzaSyDfB1sYNbS-EzXvMaTjUIEwRmbcij-ghB4'; // Replace with your Google Maps API key
-    final url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$apiKey';
 
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
 
-        // Extract city from the first result's address components
-        for (var component in data['results'][0]['address_components']) {
-          if (component['types'].contains('locality')) {
-            return component['long_name']; // Returns the city name (e.g., "Cairo")
-          }
-        }
-      }
-      return null;
-    } catch (e) {
-      debugPrint('Geocoding error: $e');
-      return null;
-    }
-  }
   // delete user address
   void deleteUserAddressByID(int? id, int index, Function callback) async {
     ApiResponseModel apiResponse = await locationRepo.removeAddressByID(id);

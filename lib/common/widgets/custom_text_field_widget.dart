@@ -202,28 +202,18 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                   : widget.countryDialCode != null ? Padding( padding:  EdgeInsets.only(left: widget.isShowBorder == true ?  10: 0),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   CountryCodePickerWidget(
-                    countryList: [
-                      {
-                        'name': 'United Arab Emirates',
-                        'code': 'AE',
-                        'dial_code': '+971',
-                        'flag': '🇦🇪'
-                      }
-                    ],
                     onChanged: widget.onCountryChanged,
-                    initialSelection: '+971', // UAE dial code
-                    favorite: ['+971'], // UAE dial code
-                    showDropDownButton: false,
+                    initialSelection: widget.countryDialCode,
+                    favorite: [widget.countryDialCode ?? ""],
+                    showDropDownButton: true,
                     padding: EdgeInsets.zero,
                     showFlagMain: true,
-                    showFlagDialog: false,
-                    enabled: false,
+                    showFlagDialog: true,
                     dialogSize: Size(Dimensions.webScreenWidth/2, size.height*0.6),
                     dialogBackgroundColor: Theme.of(context).cardColor,
+                    //barrierColor: Get.isDarkMode?Colors.black.withOpacity(0.4):null,
                     textStyle: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeSmall,
-                      color: Theme.of(context).textTheme.bodyLarge!.color,
-                    ),
+                      fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge!.color),
                   ),
                 ])): null,
               prefixIconConstraints: const BoxConstraints(minWidth: 23, maxHeight: 20),
