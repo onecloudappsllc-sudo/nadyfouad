@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>GroFresh</string>
+	<string>nadyfouad</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -42,7 +42,7 @@
 	<key>FacebookClientToken</key>
 	<string>CLIENT-TOKEN</string>
 	<key>FacebookDisplayName</key>
-	<string>Grofresh</string>
+	<string>nadyfouad</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>tel</string>
