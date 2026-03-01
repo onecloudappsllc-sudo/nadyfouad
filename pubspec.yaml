@@ -38,7 +38,7 @@ dependencies:
   flutter_widget_from_html_core: ^0.14.11
   country_code_picker: ^3.0.0
   flutter_typeahead: ^5.2.0
-  flutter_inappwebview: ^6.0.0
+  flutter_inappwebview: ^6.1.5
   cached_network_image: ^3.3.1
   audioplayers: ^6.0.0
   flutter_facebook_auth: ^6.0.4
