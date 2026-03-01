@@ -59,6 +59,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.2
+
+dependency_overrides:
+  facebook_auth_desktop: ^1.0.3
+
 flutter:
   uses-material-design: true
   assets:
