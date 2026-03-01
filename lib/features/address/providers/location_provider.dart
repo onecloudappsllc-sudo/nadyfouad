@@ -13,7 +13,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_maps_webservice/places.dart';
 import 'package:http/http.dart' as http;
 class LocationProvider with ChangeNotifier {
   final SharedPreferences? sharedPreferences;
@@ -329,15 +328,13 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  Future<Position> setLocation(String? placeID, String? address, GoogleMapController? mapController) async {
-    _loading = true;
-    notifyListeners();
-    PlacesDetailsResponse detail;
-    ApiResponseModel response = await locationRepo.getPlaceDetails(placeID);
-    detail = PlacesDetailsResponse.fromJson(response.response?.data);
-
+  ApiResponseModel response = await locationRepo.getPlaceDetails(placeID);
+    final data = response.response?.data;
+    final result = data['result'] ?? {};
+    final geometry = result['geometry'] ?? {};
+    final location = geometry['location'] ?? {};
     _pickPosition = Position(
-      longitude: detail.result.geometry!.location.lat, latitude: detail.result.geometry!.location.lng,
+      longitude: (location['lat'] as num?)?.toDouble() ?? 0.0, latitude: (location['lng'] as num?)?.toDouble() ?? 0.0,
       timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1,
       altitudeAccuracy: 0, headingAccuracy: 0,
     );
