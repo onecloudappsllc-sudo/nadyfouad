@@ -1,0 +1,1 @@
+enum WeightChargeType {unit, range}

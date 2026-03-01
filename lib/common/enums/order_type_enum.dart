@@ -1,0 +1,1 @@
+enum OrderType {delivery, self_pickup}

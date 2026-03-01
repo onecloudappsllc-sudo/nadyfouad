@@ -1,0 +1,4 @@
+-keep class android.window.** { *; }
+-keep class io.flutter.** { *; }
+-dontwarn android.window.BackEvent
+-dontwarn android.window.**

@@ -1,0 +1,1 @@
+enum FromPage {otp, login, registration, forget, profile}
