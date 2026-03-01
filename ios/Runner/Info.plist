@@ -52,6 +52,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>This app need camera access for taking photo for user profile picture.</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access to detect your delivery area and show nearby stores.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs location access to track delivery boy so that user can view delivery boy location.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
