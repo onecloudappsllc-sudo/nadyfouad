@@ -13,7 +13,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_maps_webservice/places.dart';
 import 'package:http/http.dart' as http;
 class LocationProvider with ChangeNotifier {
   final SharedPreferences? sharedPreferences;
