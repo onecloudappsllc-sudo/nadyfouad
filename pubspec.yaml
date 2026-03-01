@@ -22,7 +22,7 @@ dependencies:
   google_maps_flutter_web: ^0.5.6+2
   google_maps_flutter: ^2.6.1
   geocoding: ^3.0.0
-  google_maps_webservice: ^0.0.20
+  google_maps_webservice: any
   geolocator: ^11.0.0
   shimmer_animation: ^2.1.0+1
   url_launcher: ^6.2.6
