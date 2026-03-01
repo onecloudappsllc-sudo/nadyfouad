@@ -328,7 +328,10 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  ApiResponseModel response = await locationRepo.getPlaceDetails(placeID);
+  Future<Position> setLocation(String? placeID, String? address, GoogleMapController? mapController) async {
+    _loading = true;
+    notifyListeners();
+    ApiResponseModel response = await locationRepo.getPlaceDetails(placeID);
     final data = response.response?.data;
     final result = data['result'] ?? {};
     final geometry = result['geometry'] ?? {};
@@ -345,7 +348,7 @@ class LocationProvider with ChangeNotifier {
 
     if(mapController != null) {
       mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(
-        detail.result.geometry!.location.lat, detail.result.geometry!.location.lng,
+        (location['lat'] as num?)?.toDouble() ?? 0.0, (location['lng'] as num?)?.toDouble() ?? 0.0,
       ), zoom: 16)));
     }
     _loading = false;
