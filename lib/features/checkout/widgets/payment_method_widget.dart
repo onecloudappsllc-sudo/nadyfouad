@@ -51,11 +51,13 @@ class PaymentMethodWidget extends StatelessWidget {
                 const SizedBox(width: Dimensions.paddingSizeDefault),
 
                 isOffline ? Image.asset(
-                  Images.offlinePayment,  height: Dimensions.paddingSizeLarge, fit: BoxFit.contain,
-                ) : CustomImageWidget(
-                  height: Dimensions.paddingSizeLarge, fit: BoxFit.contain,
-                  image: '${splashProvider.configModel?.baseUrls?.getWayImageUrl}/${paymentList[index].getWayImage}',
-                ),
+                  Images.offlinePayment, height: Dimensions.paddingSizeLarge, fit: BoxFit.contain,
+                ) : (paymentList[index].getWayTitle == 'Visa / Master Online'
+                  ? Image.asset(Images.visaMaster, height: Dimensions.paddingSizeLarge, fit: BoxFit.contain)
+                  : CustomImageWidget(
+                      height: Dimensions.paddingSizeLarge, fit: BoxFit.contain,
+                      image: '${splashProvider.configModel?.baseUrls?.getWayImageUrl}/${paymentList[index].getWayImage}',
+                    )),
                 const SizedBox(width: Dimensions.paddingSizeSmall),
 
                 Text(

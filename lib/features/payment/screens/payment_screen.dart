@@ -1,19 +1,13 @@
-
-import 'dart:async';
-import 'dart:collection';
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_grocery/common/models/place_order_model.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
+import 'package:flutter_grocery/main.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_grocery/common/providers/cart_provider.dart';
 import 'package:flutter_grocery/features/order/providers/order_provider.dart';
-import 'package:flutter_grocery/utill/app_constants.dart';
-import 'package:flutter_grocery/common/widgets/custom_loader_widget.dart';
+import 'package:flutter_grocery/common/models/place_order_model.dart';
 import 'package:flutter_grocery/helper/custom_snackbar_helper.dart';
-import 'package:flutter_grocery/features/payment/widgets/cancel_dialog_widget.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class PaymentScreen extends StatefulWidget {
   final String? url;
@@ -25,217 +19,162 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  late String selectedUrl;
-  double value = 0.0;
-  final bool _isLoading = true;
-  late MyInAppBrowser browser;
+  bool _isLoading = true;
+  bool _handled = false;
 
-  @override
-  void initState() {
-    super.initState();
-    selectedUrl = widget.url ?? '';
-    _initData();
-  }
-
-  void _initData() async {
-    browser = MyInAppBrowser(context, orderId: widget.orderId);
-
-    final settings = InAppBrowserClassSettings(
-      browserSettings: InAppBrowserSettings(hideUrlBar: false),
-      webViewSettings: InAppWebViewSettings(javaScriptEnabled: true, isInspectable: kDebugMode, useShouldOverrideUrlLoading: true, useOnLoadResource: true),
-    );
-
-
-
-
-    await browser.openUrlRequest(
-      urlRequest: URLRequest(url: WebUri(selectedUrl)),
-      settings: settings,
-    );
+  void _handleUrl(String urlStr) {
+    if (_handled) return;
+    if (urlStr.contains('payment-result.php')) {
+      _handled = true;
+      print('==== PAYMENT RESULT URL: $urlStr ====');
+      
+      String status = 'failure';
+      String orderId = '';
+      try {
+        final uri = Uri.parse(urlStr);
+        final responseCode = uri.queryParameters['responseCode'];
+        final geideaStatus = uri.queryParameters['status'];
+        if (responseCode == '000' || geideaStatus == 'success') {
+          status = 'success';
+        } else if (geideaStatus == 'canceled' || responseCode == '010') {
+          status = 'canceled';
+        } else {
+          status = 'failure';
+        }
+        orderId = uri.queryParameters['orderId'] ?? '';
+      } catch (e) {
+        print('URL parse error: $e');
+      }
+      
+      print('==== STATUS: $status ====');
+      
+      Future.delayed(const Duration(seconds: 1), () {
+        try {
+          if (status == 'success') {
+            _handleSuccess(orderId);
+          } else {
+            Navigator.of(Get.context!).pop();
+          }
+        } catch (e) {
+          print('Navigation error: $e');
+        }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: ((_) => _exitApp(context).then((value) => value!)),
+    final url = 'https://nadyfouad.com/demo.nadyfouad.net/pay/geidea-session.php?sessionId=${widget.url}';
+    
+    return WillPopScope(
+      onWillPop: () async {
+        if (!_handled) {
+          _handled = true;
+                Navigator.of(Get.context!).pop();
+        }
+        return false;
+      },
       child: Scaffold(
-        body: Center(
-          child: Stack(
-            children: [
-              _isLoading ? Center(
-                child: CustomLoaderWidget(color: Theme.of(context).primaryColor),
-              ) : const SizedBox.shrink(),
-            ],
+        appBar: AppBar(
+          title: const Text('الدفع الإلكتروني'),
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              if (!_handled) {
+                _handled = true;
+                Navigator.of(Get.context!).pop();
+              }
+            },
           ),
+        ),
+        body: Stack(
+          children: [
+            InAppWebView(
+              initialUrlRequest: URLRequest(url: WebUri(url)),
+              initialSettings: InAppWebViewSettings(
+                javaScriptEnabled: true,
+                domStorageEnabled: true,
+                mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+                supportZoom: false,
+                allowsInlineMediaPlayback: true,
+                javaScriptCanOpenWindowsAutomatically: true,
+                thirdPartyCookiesEnabled: true,
+              ),
+              onLoadStart: (controller, url) {
+                _handleUrl(url?.toString() ?? '');
+              },
+              onLoadStop: (controller, url) {
+                if (mounted) {
+                  setState(() => _isLoading = false);
+                }
+                _handleUrl(url?.toString() ?? '');
+              },
+            ),
+            if (_isLoading)
+              Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 
-  Future<bool?> _exitApp(BuildContext context) async {
-    return showDialog(context: context,
-        builder: (context) => CancelDialogWidget(orderID: widget.orderId));
-  }
-}
-
-
-class MyInAppBrowser extends InAppBrowser {
-  final int? orderId;
-  final bool? fromCheckout;
-  final BuildContext context;
-  MyInAppBrowser(this.context, {
-    required this.orderId,
-    int? windowId,
-    UnmodifiableListView<UserScript>? initialUserScripts,
-    this.fromCheckout
-  })
-      : super(windowId: windowId, initialUserScripts: initialUserScripts);
-
-  bool _canRedirect = true;
-
-  @override
-  Future onBrowserCreated() async {
-    if (kDebugMode) {
-      print("\n\nBrowser Created!\n\n");
-    }
-  }
-
-  @override
-  Future onLoadStart(url, ) async {
-    if (kDebugMode) {
-      print("\n\nStarted: $url\n\n");
-    }
-    _pageRedirect(url.toString());
-  }
-
-  @override
-  Future onLoadStop(url) async {
-    pullToRefreshController?.endRefreshing();
-    if (kDebugMode) {
-      print("\n\nStopped: $url\n\n");
-    }
-    _pageRedirect(url.toString());
-  }
-
-  @override
-  void onLoadError(url, code, message) {
-    pullToRefreshController?.endRefreshing();
-    if (kDebugMode) {
-      print("Can't load [$url] Error: $message");
-    }
-  }
-
-  @override
-  void onProgressChanged(progress) {
-    if (progress == 100) {
-      pullToRefreshController?.endRefreshing();
-    }
-    if (kDebugMode) {
-      print("Progress: $progress");
-    }
-  }
-
-  @override
-  void onExit() {
-    if(_canRedirect) {
-      Navigator.pushReplacementNamed(context, '${RouteHelper.orderSuccessful}/$orderId/payment-fail');
-    }
-
-    if (kDebugMode) {
-      print("\n\nBrowser closed!\n\n");
-    }
-  }
-
-  @override
-  Future<NavigationActionPolicy> shouldOverrideUrlLoading(navigationAction) async {
-    if (kDebugMode) {
-      print("\n\nOverride ${navigationAction.request.url}\n\n");
-    }
-    return NavigationActionPolicy.ALLOW;
-  }
-
-  @override
-  void onLoadResource(resource) {
-    // print("Started at: " + response.startTime.toString() + "ms ---> duration: " + response.duration.toString() + "ms " + (response.url ?? '').toString());
-  }
-
-  @override
-  void onConsoleMessage(consoleMessage) {
-    if (kDebugMode) {
-      print("""
-    console output:
-      message: ${consoleMessage.message}
-      messageLevel: ${consoleMessage.messageLevel.toValue()}
-   """);
-    }
-  }
-
-  void _pageRedirect(String url) {
-    if(_canRedirect) {
-      bool checkedUrl = (url.contains('${AppConstants.baseUrl}${RouteHelper.orderSuccessful}') || url.contains('${AppConstants.baseUrl}${RouteHelper.wallet}'));
-      bool isSuccess = url.contains('success') && checkedUrl;
-      bool isFailed = url.contains('fail') && checkedUrl;
-      bool isCancel = url.contains('cancel') && checkedUrl;
-
-      bool isWallet = url.contains('${AppConstants.baseUrl}${RouteHelper.wallet}');
-
-      if (kDebugMode) {
-        print('----------------payment status -----$isCancel -- $isSuccess -- $isFailed');
-        print('------------------url --- $url');
+  void _handleSuccess(String orderId) {
+    try {
+      print('==== HANDLE SUCCESS ====');
+      final orderProvider = Provider.of<OrderProvider>(Get.context!, listen: false);
+      String? placeOrderString = orderProvider.getPlaceOrder();
+      print('placeOrderString: ${placeOrderString != null ? "exists" : "null"}');
+      
+      if (placeOrderString != null && placeOrderString.isNotEmpty) {
+        final decoded = utf8.decode(base64Url.decode(placeOrderString.replaceAll(' ', '+')));
+        final jsonData = jsonDecode(decoded);
+        PlaceOrderModel placeOrderBody = PlaceOrderModel.fromJson(jsonData);
+        orderProvider.placeOrder(placeOrderBody, _callback);
+        print('==== placeOrder called ====');
+      } else {
+        Navigator.of(Get.context!).pushNamedAndRemoveUntil(
+          '${RouteHelper.orderSuccessful}/${orderId.isEmpty ? "No" : orderId}/success',
+          (route) => false,
+        );
       }
-
-      if(isSuccess || isFailed || isCancel) {
-        _canRedirect = false;
-        close();
-      }
-      if(isSuccess){
-        String token = url.replaceRange(0, url.indexOf('token='), '').replaceAll('token=', '');
-        if(isWallet){
-          Navigator.pushReplacementNamed(context, RouteHelper.getWalletRoute(token: token, status: 'success'));
-        }else{
-          if(token.isNotEmpty) {
-            final orderProvider =  Provider.of<OrderProvider>(context, listen: false);
-            String placeOrderString =  utf8.decode(base64Url.decode(orderProvider.getPlaceOrder()!.replaceAll(' ', '+')));
-
-            String decodeValue = utf8.decode(base64Url.decode(token.replaceAll(' ', '+')));
-            String paymentMethod = decodeValue.substring(0, decodeValue.indexOf('&&'));
-            String transactionReference = decodeValue.substring(decodeValue.indexOf('&&') + '&&'.length, decodeValue.length);
-
-
-
-            PlaceOrderModel? placeOrderBody =  PlaceOrderModel.fromJson(jsonDecode(placeOrderString)).copyWith(
-              paymentMethod: paymentMethod.replaceAll('payment_method=', ''),
-              transactionReference:  transactionReference.replaceRange(0, transactionReference.indexOf('transaction_reference='), '').replaceAll('transaction_reference=', ''),
-            );
-
-            Provider.of<OrderProvider>(context, listen: false).placeOrder(placeOrderBody, _callback);
-
-          }else{
-            Navigator.pushReplacementNamed(context, '${RouteHelper.orderSuccessful}/$orderId/payment-fail');
-          }
-        }
-
-      }else if(isWallet){
-        Navigator.pushReplacementNamed(context, RouteHelper.getWalletRoute(token: 'failed',status: 'failed'));
-
-      }else if(isFailed) {
-        Navigator.pushReplacementNamed(context, '${RouteHelper.orderSuccessful}/${'No'}/payment-fail');
-      }else if(isCancel) {
-        Navigator.pushReplacementNamed(context, '${RouteHelper.orderSuccessful}/${'No'}/payment-cancel');
-      }
+    } catch (e, stack) {
+      print('==== Success error: $e ====');
+      print('Stack: $stack');
+      Navigator.of(Get.context!).pushNamedAndRemoveUntil(
+        '${RouteHelper.orderSuccessful}/No/success',
+        (route) => false,
+      );
     }
-
   }
 
-  void _callback(bool isSuccess, String message, String orderID) async {
-    Provider.of<CartProvider>(context, listen: false).clearCartList();
-    Provider.of<OrderProvider>(context, listen: false).stopLoader();
-    if(isSuccess) {
-      Navigator.pushReplacementNamed(context, '${RouteHelper.orderSuccessful}/$orderID/success');
-    }else {
+void _callback(bool isSuccess, String message, String orderID) async {
+    if (!isSuccess) {
       showCustomSnackBarHelper(message);
+      return;
     }
-  }
 
+    final ctx = Get.context;
+    if (ctx == null) return;
+
+    try {
+      Provider.of<CartProvider>(ctx, listen: false).clearCartList();
+      Provider.of<OrderProvider>(ctx, listen: false).stopLoader();
+    } catch (e) {}
+
+    // شغل في الخلفية بدون await
+    Provider.of<OrderProvider>(ctx, listen: false)
+        .getOrderDetails(orderID: orderID)
+        .catchError((e) => print('getOrderDetails error: $e'));
+
+    Navigator.pushReplacementNamed(
+      ctx,
+      '${RouteHelper.orderSuccessful}/$orderID/success',
+    );
+  }
 }

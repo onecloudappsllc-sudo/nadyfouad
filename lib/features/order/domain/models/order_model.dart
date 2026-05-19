@@ -190,7 +190,7 @@ class OrderModel {
     _customer = json['customer'] != null
         ? UserInfoModel.fromJson(json['customer'])
         : null;
-    _details = json['details'][0]['delivery_date'];
+    _details = (json['details'] != null && json['details'].isNotEmpty) ? json['details'][0]['delivery_date'] : null;
     _deliveryMan = json['delivery_man'] != null
         ? DeliveryMan.fromJson(json['delivery_man'])
         : null;

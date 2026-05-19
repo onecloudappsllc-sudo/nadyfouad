@@ -138,7 +138,7 @@ class _PaymentMethodBottomSheetWidgetState extends State<PaymentMethodBottomShee
         ),
 
         Container(
-          constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.8),
+          constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.9),
           width: 550,
           margin: const EdgeInsets.only(top: kIsWeb ? 0 : 30),
           decoration: BoxDecoration(

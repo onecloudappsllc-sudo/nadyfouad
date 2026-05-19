@@ -1,6 +1,4 @@
-
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/models/place_order_model.dart';
 import 'package:flutter_grocery/features/checkout/domain/models/check_out_model.dart';
@@ -478,9 +476,10 @@ class OrderProvider extends ChangeNotifier {
 
 
   void savePaymentMethod({int? index, PaymentMethod? method, bool isUpdate = true}){
-    if(method != null){
-      _selectedPaymentMethod = method.copyWith('online');
-    }else if(index != null && index == 0){
+if(method != null){
+  _selectedPaymentMethod = method;
+}
+     else if(index != null && index == 0){
       _selectedPaymentMethod = PaymentMethod(
         getWayTitle: getTranslated('cash_on_delivery', Get.context!),
         getWay: 'cash_on_delivery',

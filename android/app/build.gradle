@@ -33,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "com.nadi.fouad"
     compileSdk 36
-    ndkVersion flutter.ndkVersion
+    ndkVersion "27.0.12077973"
 
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -53,8 +53,8 @@ android {
         applicationId "com.nadi.fouad"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 35
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 10
+        versionName "1.0.9"
         multiDexEnabled true
     }
 

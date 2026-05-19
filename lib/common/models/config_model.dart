@@ -40,6 +40,7 @@ class ConfigModel {
   Whatsapp? _whatsapp;
   CookiesManagement? _cookiesManagement;
   bool? _offlinePayment;
+  bool? _geideaPayment;
   double? _freeDeliveryOverAmount;
   bool? _freeDeliveryStatus;
   bool? _isVatTexInclude;
@@ -275,6 +276,7 @@ class ConfigModel {
   Whatsapp? get whatsapp => _whatsapp;
   CookiesManagement? get cookiesManagement => _cookiesManagement;
   bool? get offlinePayment => _offlinePayment;
+  bool? get geideaPayment => _geideaPayment;
   double? get freeDeliveryOverAmount => _freeDeliveryOverAmount;
   bool? get freeDeliveryStatus => _freeDeliveryStatus;
   bool? get isVatTexInclude => _isVatTexInclude;
@@ -396,6 +398,7 @@ class ConfigModel {
         : null;
 
     _offlinePayment = '${json['offline_payment']}' == 'true';
+    _geideaPayment = '${json['geidea_payment']}'.contains('1');
     _freeDeliveryOverAmount = double.tryParse('${json['free_delivery_over_amount']}');
     _maxOrderForCODAmount = double.tryParse('${json['maximum_amount_for_cod_order']}');
     _maxAmountCodStatus = '${json['maximum_amount_for_cod_order_status']}'.contains('1');

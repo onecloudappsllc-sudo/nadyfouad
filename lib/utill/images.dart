@@ -9,6 +9,7 @@ class Images {
   static const String arabicFlag = 'assets/image/arabic.png';
   static const String bd = 'assets/image/bd.png';
 
+  static const String visaMaster = 'assets/image/visa_master.png';
   static const String maintenance = 'assets/image/maintenance.png';
   static const String chat = 'assets/image/chat.png';
   static const String language = 'assets/image/language.png';

@@ -36,7 +36,15 @@ class CheckOutHelper {
     if(configModel.offlinePayment!) {
       paymentMethodList.add(PaymentMethod(getWay: 'offline_payment', getWayImage: Images.walletPayment));
     }
-
+     
+    if(configModel.geideaPayment ?? false) {
+  paymentMethodList.add(PaymentMethod(
+    getWay: 'geidea_payment',
+    getWayTitle: 'Online Payment',
+    getWayImage: Images.cashOnDelivery,
+  ));
+}
+    
     if(configModel.walletStatus!) {
       paymentMethodList.add(PaymentMethod(getWay: 'wallet_payment', getWayImage: Images.walletPayment));
     }

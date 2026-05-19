@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/providers/localization_provider.dart';
 import 'package:flutter_grocery/common/widgets/custom_asset_image_widget.dart';
@@ -81,8 +80,9 @@ class MenuWidget extends StatelessWidget {
     final bool isLoggedIn = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
 
 
-    print('--------(MENU)----------${Provider.of<SplashProvider>(Get.context!, listen: false).configModel?.walletStatus! ?? false}');
-    print('--------(MENU)----------${Provider.of<SplashProvider>(Get.context!, listen: false).configModel?.loyaltyPointStatus! ?? false}');
+    print('--------(MENU)----------${Provider.of<SplashProvider>(Get.context!, listen: false).configModel?.walletStatus ?? false}');
+    print('--------(MENU)----------${Provider.of<SplashProvider>(Get.context!, listen: false).configModel?.loyaltyPointStatus ?? false}');
+    print('--------(MENU)----------${Provider.of<SplashProvider>(Get.context!, listen: false).configModel?.loyaltyPointStatus ?? false}');
 
     return PopScope(
       canPop: true,

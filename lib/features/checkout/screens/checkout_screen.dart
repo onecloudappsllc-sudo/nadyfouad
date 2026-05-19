@@ -80,7 +80,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final ConfigModel configModel = Provider.of<SplashProvider>(context, listen: false).configModel!;
+    final ConfigModel? configModel = Provider.of<SplashProvider>(context, listen: false).configModel;
+if (configModel == null) return const SizedBox();
     final LocationProvider locationProvider = Provider.of<LocationProvider>(context, listen: false);
     final SplashProvider splashProvider = Provider.of<SplashProvider>(context, listen: false);
     final OrderProvider orderProvider = Provider.of<OrderProvider>(context, listen: false);
@@ -596,7 +597,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           const FooterWebWidget(footerType: FooterType.sliver),
         ])),
 
-        if(!ResponsiveHelper.isDesktop(context)) Center(child: PlaceOrderButtonWidget(discount: widget.discount ?? 0.0, couponDiscount: widget.couponDiscount, tax: widget.tax, scrollController: scrollController, dropdownKey: dropDownKey, weight: weightCharge,fromOfflinePayment: orderProvider.selectedPaymentMethod?.getWay.toString()=='offline'?true:false,)),
+        if(!ResponsiveHelper.isDesktop(context)) SafeArea(bottom: true, child: Center(child: PlaceOrderButtonWidget(discount: widget.discount ?? 0.0, couponDiscount: widget.couponDiscount, tax: widget.tax, scrollController: scrollController, dropdownKey: dropDownKey, weight: weightCharge,fromOfflinePayment: orderProvider.selectedPaymentMethod?.getWay.toString()=='offline'?true:false,))),
       ]) : const NotLoggedInWidget(),
     );
   }
@@ -680,5 +681,3 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
 
 }
-
-
