@@ -318,6 +318,7 @@ class CountryCodePickerWidgetState extends State<CountryCodePickerWidget> {
               flagDecoration: widget.flagDecoration,
               hideHeaderText: false,
               headerAlignment: Alignment.center,
+              headerTextStyle: null,
             ),
         ),
       ),
