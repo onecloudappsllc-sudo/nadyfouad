@@ -125,9 +125,51 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                   await scrollController?.animateTo(0, duration: const Duration(milliseconds: 100), curve: Curves.ease);
                   _openDropdown();
                 } else {
-                  List<CartModel> cartList = Provider.of<CartProvider>(context, listen: false).cartList;
-                  List<Cart> carts = [];
+                  final CartProvider cartProvider = Provider.of<CartProvider>(context, listen: false);
+                  List<CartModel> cartList = List.from(cartProvider.cartList);
 
+                  // تحقق من الـ stock من السيرفر مباشرة
+                  List<String> removedItems = [];
+                  for (int i = cartList.length - 1; i >= 0; i--) {
+                    try {
+                      final stockResponse = await http.get(
+                        Uri.parse('${AppConstants.baseUrl}/api/v1/products/details/${cartList[i].id}'),
+                        headers: {'Content-Type': 'application/json'},
+                      );
+                      if (stockResponse.statusCode == 200) {
+                        final productData = convert.jsonDecode(stockResponse.body);
+                        if (productData.containsKey('errors')) {
+                          // المنتج مش متاح
+                          removedItems.add(cartList[i].name ?? '');
+                          cartProvider.removeItemFromCart(i, context);
+                        } else {
+                          final int stock = productData['total_stock'] ?? 0;
+                          if (stock <= 0) {
+                            removedItems.add(cartList[i].name ?? '');
+                            cartProvider.removeItemFromCart(i, context);
+                          }
+                        }
+                      } else {
+                        // لو الـ status مش 200 شيل المنتج
+                        removedItems.add(cartList[i].name ?? '');
+                        cartProvider.removeItemFromCart(i, context);
+                      }
+                    } catch (e) {
+                      // لو فيه error في الـ API ماشي
+                    }
+                  }
+
+                  if (removedItems.isNotEmpty) {
+                    cartList = List.from(cartProvider.cartList);
+                    if (cartList.isEmpty) {
+                      showCustomSnackBarHelper('تم إزالة جميع المنتجات لأنها نفدت من المخزون');
+                      return;
+                    }
+                    showCustomSnackBarHelper('تم إزالة "${removedItems.join('، ')}" لأنه نفد من المخزون', isError: false);
+                    await Future.delayed(const Duration(seconds: 2));
+                  }
+
+                  List<Cart> carts = [];
                   for (int index = 0; index < cartList.length; index++) {
                     Cart cart = Cart(
                       productId: cartList[index].id, price: cartList[index].price,
@@ -138,13 +180,6 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                     carts.add(cart);
                   }
 
-                  print('======= AMOUNT DEBUG =======');
-                  print('checkOutData.amount = ${checkOutData?.amount}');
-                  print('orderProvider.deliveryCharge = ${orderProvider.deliveryCharge}');
-                  print('weight = $weight');
-                  print('total (used in display) = $total');
-                  print('============================');
-                  
                   PlaceOrderModel placeOrderBody = PlaceOrderModel(
                     cart: carts, orderType: checkOutData?.orderType,
                     couponCode: checkOutData?.couponCode,
@@ -155,14 +190,16 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                         : 0,
                     distance: isSelfPickup ? 0 : orderProvider.distance,
                     couponDiscountAmount: Provider.of<CouponProvider>(context, listen: false).discount,
-paymentMethod: orderProvider.selectedOfflineValue != null
-    ? 'offline_payment'
-    : orderProvider.selectedPaymentMethod?.getWay == 'offline'
-        ? 'offline_payment'
-        : orderProvider.selectedPaymentMethod?.getWay ?? 'geidea_payment',
+                    paymentMethod: orderProvider.selectedOfflineValue != null
+                        ? 'offline_payment'
+                        : orderProvider.selectedPaymentMethod?.getWay == 'offline'
+                            ? 'offline_payment'
+                            : orderProvider.selectedPaymentMethod?.getWay ?? 'geidea_payment',
                     deliveryDate: orderProvider.getDateList()[orderProvider.selectDateSlot],
                     couponDiscountTitle: '',
-                    orderAmount: total + (weight ?? 0),
+                   orderAmount: removedItems.isEmpty
+                        ? total + (weight ?? 0)
+                        : cartList.fold(0.0, (sum, item) => sum + ((item.discountedPrice ?? 0) * (item.quantity ?? 0)) + ((item.tax ?? 0) * (item.quantity ?? 0))) + deliveryCharge + (weight ?? 0),
                     selectedDeliveryArea: orderProvider.selectedAreaID,
                     paymentInfo: orderProvider.selectedPaymentMethod?.getWay == 'offline' ? OfflinePaymentInfo(
                       methodFields: CheckOutHelper.getOfflineMethodJson(orderProvider.selectedOfflineMethod?.methodFields),
@@ -173,49 +210,86 @@ paymentMethod: orderProvider.selectedOfflineValue != null
                     isPartial: orderProvider.partialAmount == null ? '0' : '1',
                   );
 
-if (placeOrderBody.paymentMethod == 'geidea_payment' || placeOrderBody.paymentMethod == 'geidea') {
-  final String placeOrder = convert.base64Url.encode(
-    convert.utf8.encode(convert.jsonEncode(placeOrderBody.toJson()))
-  );
-  await orderProvider.clearPlaceOrder();
-  await orderProvider.setPlaceOrder(placeOrder);
-  
-  if (kIsWeb) {
-    String geideaUrl = '${AppConstants.baseUrl}/pay/geidea-checkout.php?amount=${placeOrderBody.orderAmount?.toStringAsFixed(2)}';
-    html.window.open(geideaUrl, '_self');
-  } else {
-    // استخدام Geidea SDK
-    try {
-      final sessionResponse = await http.post(
-        Uri.parse('${AppConstants.baseUrl}/api/v1/geidea/create-session'),
-        headers: {'Content-Type': 'application/json'},
-        body: convert.jsonEncode({
-          'amount': orderProvider.partialAmount != null
-              ? (placeOrderBody.orderAmount! - (profileProvider.userInfoModel?.walletBalance ?? 0))
-              : placeOrderBody.orderAmount,
-        }),
-      );
-      
-      final sessionData = convert.jsonDecode(sessionResponse.body);
-      final sessionId = sessionData['session']?['id'];
-      
-      if (sessionId != null) {
-        Navigator.pushReplacementNamed(
-          context, 
-          RouteHelper.getPaymentRoute(url: sessionId),
-        );
-      } else {
-        showCustomSnackBarHelper('Failed to create payment session');
-      }
-    } catch (e) {
-      showCustomSnackBarHelper('Payment error: $e');
-    }
-  }
+                  if (placeOrderBody.paymentMethod == 'geidea_payment' || placeOrderBody.paymentMethod == 'geidea') {
+                    final String placeOrder = convert.base64Url.encode(
+                      convert.utf8.encode(convert.jsonEncode(placeOrderBody.toJson()))
+                    );
+                    await orderProvider.clearPlaceOrder();
+                    await orderProvider.setPlaceOrder(placeOrder);
+
+                    if (kIsWeb) {
+                      String geideaUrl = '${AppConstants.baseUrl}/pay/geidea-checkout.php?amount=${placeOrderBody.orderAmount?.toStringAsFixed(2)}';
+                      html.window.open(geideaUrl, '_self');
+                    } else {
+                      try {
+                        final sessionResponse = await http.post(
+                          Uri.parse('${AppConstants.baseUrl}/api/v1/geidea/create-session'),
+                          headers: {'Content-Type': 'application/json'},
+                          body: convert.jsonEncode({
+                            'amount': orderProvider.partialAmount != null
+                                ? (placeOrderBody.orderAmount! - (profileProvider.userInfoModel?.walletBalance ?? 0))
+                                : placeOrderBody.orderAmount,
+                          }),
+                        );
+                        final sessionData = convert.jsonDecode(sessionResponse.body);
+                        final sessionId = sessionData['session']?['id'];
+                        if (sessionId != null) {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            RouteHelper.getPaymentRoute(url: sessionId),
+                          );
+                        } else {
+                          showCustomSnackBarHelper('Failed to create payment session');
+                        }
+                      } catch (e) {
+                        showCustomSnackBarHelper('Payment error: $e');
+                      }
+                    }
                   } else if (placeOrderBody.paymentMethod == 'wallet_payment'
                       || placeOrderBody.paymentMethod == 'cash_on_delivery'
                       || placeOrderBody.paymentMethod == 'offline_payment'
                       || placeOrderBody.paymentMethod == 'visa_on_delivery') {
-                    orderProvider.placeOrder(placeOrderBody, _callback);
+                    orderProvider.placeOrder(placeOrderBody, (bool isSuccess, String message, String orderID) async {
+                      if (!isSuccess && message.contains('الكمية غير كافية')) {
+                        String productName = message.replaceAll('الكمية غير كافية: ', '').split(' (متاح')[0];
+                        final cartProvider = Provider.of<CartProvider>(Get.context!, listen: false);
+                        int removeIndex = cartProvider.cartList.indexWhere((item) => item.name != null && item.name!.contains(productName.substring(0, productName.length > 5 ? 5 : productName.length)));
+                        if (removeIndex != -1) {
+                          cartProvider.removeItemFromCart(removeIndex, Get.context!);
+                          showCustomSnackBarHelper('تم إزالة "$productName" لأنه نفد من المخزون، جاري إعادة الطلب...', isError: false);
+                          await Future.delayed(const Duration(seconds: 2));
+                          List<Cart> newCarts = cartProvider.cartList.map((item) => Cart(
+                            productId: item.id, price: item.price,
+                            discountAmount: item.discountedPrice,
+                            quantity: item.quantity, taxAmount: item.tax,
+                            variant: '', variation: [Variation(type: item.variation?.type)],
+                          )).toList();
+                          double newAmount = (cartProvider.cartList.fold(0.0, (sum, item) => sum + (item.discountedPrice! * item.quantity!))) + (orderProvider.deliveryCharge ?? 0);
+                          PlaceOrderModel newPlaceOrderBody = PlaceOrderModel(
+                            cart: newCarts,
+                            orderType: placeOrderBody.orderType,
+                            couponCode: placeOrderBody.couponCode,
+                            orderNote: placeOrderBody.orderNote,
+                            branchId: placeOrderBody.branchId,
+                            deliveryAddressId: placeOrderBody.deliveryAddressId,
+                            distance: placeOrderBody.distance,
+                            couponDiscountAmount: placeOrderBody.couponDiscountAmount,
+                            paymentMethod: placeOrderBody.paymentMethod,
+                            deliveryDate: placeOrderBody.deliveryDate,
+                            couponDiscountTitle: placeOrderBody.couponDiscountTitle,
+                            orderAmount: newAmount,
+                            selectedDeliveryArea: placeOrderBody.selectedDeliveryArea,
+                            paymentInfo: placeOrderBody.paymentInfo,
+                            isPartial: placeOrderBody.isPartial,
+                          );
+                          orderProvider.placeOrder(newPlaceOrderBody, _callback);
+                        } else {
+                          _callback(isSuccess, message, orderID);
+                        }
+                      } else {
+                        _callback(isSuccess, message, orderID);
+                      }
+                    });
                   } else {
                     String? hostname = html.window.location.hostname;
                     String protocol = html.window.location.protocol;

@@ -436,7 +436,7 @@
   "wallet_payment": "دفع محفظة",
   "pay_via_online": "الدفع عبر الإنترنت",
   "faster_and_secure_way_to_pay_bill": "طريقة أسرع وآمنة لدفع الفاتورة",
-  "select": "يختار",
+  "select": "تنفيذ الطلب",
   "you_do_not_have_sufficient_balance_to_pay_full_amount_via_wallet": "ليس لديك رصيد كاف لدفع مبلغ كامل عبر المحفظة.",
   "you_can_pay_the_full_amount_with_your_wallet": "يمكنك دفع المبلغ الكامل مع محفظتك.",
   "want_to_pay_partially_with_wallet": "تريد أن تدفع جزئيا مع المحفظة؟",

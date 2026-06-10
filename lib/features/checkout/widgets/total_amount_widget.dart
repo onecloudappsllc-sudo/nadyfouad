@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/common/models/config_model.dart';
 import 'package:flutter_grocery/common/widgets/custom_alert_dialog_widget.dart';
@@ -15,7 +14,6 @@ import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:provider/provider.dart';
-
 
 class TotalAmountWidget extends StatelessWidget {
   const TotalAmountWidget({
@@ -43,7 +41,6 @@ class TotalAmountWidget extends StatelessWidget {
 
     print('-------------------(DELIVERY CHARGE IN TOTAL AMOUNT WIDGET)------------------------$deliveryCharge');
 
-
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
 
       Text(getTranslated('cost_summery', context),
@@ -57,6 +54,25 @@ class TotalAmountWidget extends StatelessWidget {
       Divider(height: 2, color: Theme.of(context).hintColor.withOpacity(0.2)),
       const SizedBox(height: Dimensions.paddingSizeSmall),
 
+      Container(
+        margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
+        padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+        decoration: BoxDecoration(
+          color: Colors.orange.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.orange.withOpacity(0.3)),
+        ),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(Icons.info_outline, size: 16, color: Colors.orange.shade700),
+          const SizedBox(width: 6),
+          Expanded(child: Text(
+            'تنبيه: بعض المنتجات يتم وزنها فعلياً عند التحضير. في حال نقص الوزن يُرجع الفرق للمحفظة، وإذا زاد يُضاف للفاتورة ويُسدَّد عند التسليم.',
+            style: poppinsRegular.copyWith(fontSize: 11, color: Colors.orange.shade800),
+            textDirection: TextDirection.rtl,
+          )),
+        ]),
+      ),
+
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(getTranslated('subtotal', context),
           style: poppinsRegular.copyWith(
@@ -64,18 +80,15 @@ class TotalAmountWidget extends StatelessWidget {
             fontSize: Dimensions.fontSizeDefault,
           ),
         ),
-
         CustomDirectionalityWidget(child: Text(
           PriceConverterHelper.convertPrice(context, amount),
           style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeDefault),
         )),
-
       ]),
       const SizedBox(height: Dimensions.paddingSizeSmall),
 
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Row(children: [
-
           Text(getTranslated('delivery', context),
             style: poppinsRegular.copyWith(
               color: Theme.of(context).hintColor.withOpacity(0.5),
@@ -83,11 +96,9 @@ class TotalAmountWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Dimensions.paddingSizeSmall),
-
           Tooltip(
             triggerMode: TooltipTriggerMode.tap,
             preferBelow: false,
-
             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
             decoration: BoxDecoration(
               color: Theme.of(context).textTheme.bodyMedium?.color,
@@ -99,20 +110,15 @@ class TotalAmountWidget extends StatelessWidget {
               height: 18, width: 18,
             ),
           ),
-
         ]),
-
-
         CustomDirectionalityWidget(child: Text(
           PriceConverterHelper.convertPrice(context, deliveryCharge + (weight ?? 0.0)),
           style: poppinsMedium.copyWith(fontSize: Dimensions.fontSizeDefault),
         )),
-
       ]),
       const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-
         InkWell(
           onTap: (){
             ResponsiveHelper.showDialogOrBottomSheet(context,
@@ -128,15 +134,11 @@ class TotalAmountWidget extends StatelessWidget {
             ),
           ),
         ),
-
-      ],),
+      ]),
 
     ]);
   }
 }
-
-
-
 
 String _toolTipMessage(BuildContext context){
   final OrderProvider orderProvider = Provider.of<OrderProvider>(context, listen: false);
@@ -151,5 +153,4 @@ String _toolTipMessage(BuildContext context){
   }
 
   return message;
-
 }

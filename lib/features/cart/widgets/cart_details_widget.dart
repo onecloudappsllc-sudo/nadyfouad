@@ -72,6 +72,25 @@ class CartDetailsWidget extends StatelessWidget {
           Text(getTranslated('cost_summery', context), style: poppinsSemiBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
           Divider(height: 30, thickness: 1, color: Theme.of(context).disabledColor.withOpacity(0.05)),
 
+Container(
+            margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
+            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.red, width: 1.5),
+            ),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Icon(Icons.info_outline, size: 16, color: Colors.red),
+              const SizedBox(width: 6),
+              Expanded(child: Text(
+                'تنبيه: قد يختلف الوزن الفعلي لبعض المنتجات عند التجهيز. سيتم احتساب السعر وفق الوزن النهائي، مع استرداد أي فرق للمحفظة أو إضافلتسليم.',
+                style: poppinsBold.copyWith(fontSize: 14, color: Colors.red),
+              )),
+            ]),
+          ),
+
+
           PriceItemWidget(
             title: getTranslated('items_price', context),
             subTitle: PriceConverterHelper.convertPrice(context, _itemPrice),
