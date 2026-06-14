@@ -128,37 +128,29 @@ class PlaceOrderButtonWidget extends StatelessWidget {
                   final CartProvider cartProvider = Provider.of<CartProvider>(context, listen: false);
                   List<CartModel> cartList = List.from(cartProvider.cartList);
 
-                  // تحقق من الـ stock من السيرفر مباشرة
+// تحقق من الـ stock بـ request واحد
                   List<String> removedItems = [];
-                  for (int i = cartList.length - 1; i >= 0; i--) {
-                    try {
-                      final stockResponse = await http.get(
-                        Uri.parse('${AppConstants.baseUrl}/api/v1/products/details/${cartList[i].id}'),
-                        headers: {'Content-Type': 'application/json'},
-                      );
-                      if (stockResponse.statusCode == 200) {
-                        final productData = convert.jsonDecode(stockResponse.body);
-                        if (productData.containsKey('errors')) {
-                          // المنتج مش متاح
+                  try {
+                    final List<int> ids = cartList.map((e) => e.id as int).toList();
+                    final stockResponse = await http.post(
+                      Uri.parse('${AppConstants.baseUrl}/api/v1/products/check-stock'),
+                      headers: {'Content-Type': 'application/json'},
+                      body: convert.jsonEncode({'ids': ids}),
+                    );
+                    if (stockResponse.statusCode == 200) {
+                      final List stockData = convert.jsonDecode(stockResponse.body);
+                      for (int i = cartList.length - 1; i >= 0; i--) {
+                        final product = stockData.firstWhere(
+                          (p) => p['id'] == cartList[i].id,
+                          orElse: () => null,
+                        );
+                        if (product != null && product['available'] == false) {
                           removedItems.add(cartList[i].name ?? '');
                           cartProvider.removeItemFromCart(i, context);
-                        } else {
-                          final int stock = productData['total_stock'] ?? 0;
-                          if (stock <= 0) {
-                            removedItems.add(cartList[i].name ?? '');
-                            cartProvider.removeItemFromCart(i, context);
-                          }
                         }
-                      } else {
-                        // لو الـ status مش 200 شيل المنتج
-                        removedItems.add(cartList[i].name ?? '');
-                        cartProvider.removeItemFromCart(i, context);
                       }
-                    } catch (e) {
-                      // لو فيه error في الـ API ماشي
                     }
-                  }
-
+                  } catch (e) {}
                   if (removedItems.isNotEmpty) {
                     cartList = List.from(cartProvider.cartList);
                     if (cartList.isEmpty) {
